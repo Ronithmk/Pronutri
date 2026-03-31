@@ -1,0 +1,42 @@
+name: nutritrack
+description: ProNutri - Your Personal Nutrition & Fitness Companion
+publish_to: 'none'
+version: 2.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  shared_preferences: ^2.2.2
+  http: ^1.1.0
+  provider: ^6.1.1
+  fl_chart: ^0.66.2
+  google_fonts: ^6.1.0
+  intl: ^0.19.0
+  flutter_animate: ^4.5.0
+  percent_indicator: ^4.2.3
+  crypto: ^3.0.3
+  uuid: ^4.3.3
+  image_picker: ^1.0.7
+  path_provider: ^2.1.2
+  cached_network_image: ^3.3.1
+  lottie: ^3.0.0
+  mailer: ^6.1.0
+  pin_code_fields: ^8.0.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  hive_generator: ^2.0.1
+  build_runner: ^2.4.7
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
