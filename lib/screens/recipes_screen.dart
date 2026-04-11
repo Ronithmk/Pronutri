@@ -1,9 +1,6 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:provider/provider.dart';
-import '../services/auth_provider.dart';
-import '../services/claude_service.dart';
+import '../data/recipe_data.dart';
 import '../theme/app_theme.dart';
 
 // ─────────────────────────── Model ───────────────────────────
@@ -21,6 +18,8 @@ class AiRecipe {
   final String cookTime;
   final String difficulty;
   final String cuisine;
+  // Lowercase keywords used for ingredient-based filtering
+  final List<String> keywords;
 
   const AiRecipe({
     required this.name,
@@ -35,6 +34,7 @@ class AiRecipe {
     required this.cookTime,
     required this.difficulty,
     required this.cuisine,
+    this.keywords = const [],
   });
 
   factory AiRecipe.fromJson(Map<String, dynamic> j) => AiRecipe(
@@ -49,8 +49,18 @@ class AiRecipe {
         fat: (j['fat'] ?? 0) as int,
         cookTime: j['cookTime'] ?? '30 min',
         difficulty: j['difficulty'] ?? 'Medium',
-        cuisine: j['cuisine'] ?? 'International',
+        cuisine: j['cuisine'] ?? 'Indian',
       );
+
+  /// How many of [selected] ingredients match this recipe's keywords.
+  int matchCount(List<String> selected) {
+    int count = 0;
+    for (final sel in selected) {
+      final s = sel.toLowerCase();
+      if (keywords.any((k) => k.contains(s) || s.contains(k))) count++;
+    }
+    return count;
+  }
 }
 
 // ─────────────────────────── Main Screen ───────────────────────────
@@ -71,10 +81,13 @@ class _RecipesScreenState extends State<RecipesScreen>
   String? _error;
   late AnimationController _shimmerCtrl;
 
+  // Region filter: null = All
+  String? _regionFilter;
+
   static const _suggestions = [
-    'Chicken', 'Rice', 'Eggs', 'Paneer', 'Tomato', 'Spinach',
-    'Onion', 'Garlic', 'Lemon', 'Oats', 'Banana', 'Broccoli',
-    'Salmon', 'Tofu', 'Sweet Potato', 'Greek Yogurt',
+    'Chicken', 'Rice', 'Paneer', 'Eggs', 'Tomato', 'Onion',
+    'Dal', 'Potato', 'Spinach', 'Coconut', 'Lemon', 'Oats',
+    'Fish', 'Yogurt', 'Garlic', 'Ginger',
   ];
 
   @override
@@ -84,6 +97,8 @@ class _RecipesScreenState extends State<RecipesScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat();
+    // Show all recipes on first load
+    _recipes = List<AiRecipe>.from(kAllRecipes);
   }
 
   @override
@@ -106,95 +121,44 @@ class _RecipesScreenState extends State<RecipesScreen>
     setState(() {
       _ingredients.add(normalized);
       _searchCtrl.clear();
-      _recipes = null;
-      _error = null;
     });
+    _filterRecipes();
   }
 
   void _removeIngredient(String ing) {
     setState(() {
       _ingredients.remove(ing);
-      _recipes = null;
     });
+    _filterRecipes();
   }
 
-  Future<void> _generateRecipes() async {
+  void _filterRecipes() {
+    _searchFocus.unfocus();
+    var pool = List<AiRecipe>.from(kAllRecipes);
+
+    // Apply region filter
+    if (_regionFilter != null) {
+      pool = pool.where((r) => r.cuisine == _regionFilter).toList();
+    }
+
     if (_ingredients.isEmpty) {
-      _showSnack('Add at least one ingredient');
+      setState(() => _recipes = pool);
       return;
     }
-    _searchFocus.unfocus();
-    setState(() {
-      _loading = true;
-      _error = null;
-      _recipes = null;
-    });
 
-    final user = context.read<AuthProvider>().currentUser;
-    final goal = user?.goal ?? 'maintain';
-    final ingredientList = _ingredients.join(', ');
+    // Score and filter by ingredient match
+    final scored = pool
+        .map((r) => (recipe: r, score: r.matchCount(_ingredients)))
+        .where((e) => e.score > 0)
+        .toList()
+      ..sort((a, b) => b.score.compareTo(a.score));
 
-    final system = '''You are a professional chef and nutritionist AI.
-Generate exactly 3 healthy recipes using some or all of the provided ingredients.
-The user's fitness goal is: $goal.
-Return ONLY valid JSON — no markdown, no explanation, no code fences.
-
-JSON format:
-{
-  "recipes": [
-    {
-      "name": "Recipe Name",
-      "emoji": "🍗",
-      "description": "Short 1-2 sentence description",
-      "cuisine": "Indian/Italian/etc",
-      "cookTime": "25 min",
-      "difficulty": "Easy",
-      "calories": 420,
-      "protein": 35,
-      "carbs": 28,
-      "fat": 12,
-      "ingredients": ["200g chicken breast", "2 cloves garlic", ...],
-      "steps": ["Step 1 instruction", "Step 2 instruction", ...]
-    }
-  ]
-}''';
-
-    final prompt = 'Ingredients I have: $ingredientList. Create 3 healthy recipes tailored for my $goal goal.';
-
-    try {
-      final raw = await ClaudeService.chat(
-        userMessage: prompt,
-        history: const [],
-        systemContext: system,
-      );
-
-      // Extract JSON — strip any accidental markdown fences
-      final jsonStr = _extractJson(raw);
-      if (jsonStr == null) throw Exception('No JSON in response');
-
-      final decoded = jsonDecode(jsonStr) as Map<String, dynamic>;
-      final list = (decoded['recipes'] as List)
-          .map((r) => AiRecipe.fromJson(r as Map<String, dynamic>))
-          .toList();
-
-      setState(() {
-        _recipes = list;
-        _loading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _loading = false;
-        _error = 'Could not generate recipes. Please try again.';
-      });
-    }
+    setState(() => _recipes = scored.map((e) => e.recipe).toList());
   }
 
-  String? _extractJson(String raw) {
-    // Try to find {...} block
-    final start = raw.indexOf('{');
-    final end = raw.lastIndexOf('}');
-    if (start == -1 || end == -1 || end <= start) return null;
-    return raw.substring(start, end + 1);
+  void _setRegion(String? region) {
+    setState(() => _regionFilter = region);
+    _filterRecipes();
   }
 
   void _showSnack(String msg) {
@@ -262,7 +226,7 @@ JSON format:
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'AI Recipe Chef',
+              'Indian Recipes',
               style: GoogleFonts.inter(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -270,7 +234,7 @@ JSON format:
               ),
             ),
             Text(
-              'Add ingredients → get personalized recipes',
+              'Select ingredients to find matching recipes',
               style: GoogleFonts.inter(
                 fontSize: 11,
                 color: AppColors.textSecondary,
@@ -502,62 +466,41 @@ JSON format:
   }
 
   Widget _buildGenerateButton(bool isDark) {
-    final hasIngredients = _ingredients.isNotEmpty;
-    return GestureDetector(
-      onTap: hasIngredients && !_loading ? _generateRecipes : null,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 200),
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 16),
-        decoration: BoxDecoration(
-          gradient: hasIngredients
-              ? const LinearGradient(
-                  colors: [Color(0xFF4CAF50), Color(0xFF2196F3)],
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,
-                )
-              : null,
-          color: hasIngredients ? null : (isDark ? AppColors.surfaceDark : AppColors.surface),
-          borderRadius: BorderRadius.circular(16),
-          border: hasIngredients
-              ? null
-              : Border.all(color: isDark ? AppColors.borderDark : AppColors.border),
-          boxShadow: hasIngredients
-              ? [
-                  BoxShadow(
-                    color: AppColors.primary.withOpacity(0.3),
-                    blurRadius: 12,
-                    offset: const Offset(0, 4),
-                  )
-                ]
-              : null,
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (_loading)
-              const SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-              )
-            else
-              const Text('✨', style: TextStyle(fontSize: 20)),
-            const SizedBox(width: 10),
-            Text(
-              _loading
-                  ? 'Generating recipes…'
-                  : hasIngredients
-                      ? 'Generate AI Recipes (${_ingredients.length} ingredients)'
-                      : 'Add ingredients to get started',
-              style: GoogleFonts.inter(
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: hasIngredients ? Colors.white : AppColors.textSecondary,
+    const regions = [
+      (label: 'All', value: null),
+      (label: '🌶 North Indian', value: 'North Indian'),
+      (label: '🥥 South Indian', value: 'South Indian'),
+      (label: '🍃 Healthy', value: 'Indian'),
+    ];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: regions.map((r) {
+          final active = _regionFilter == r.value;
+          return GestureDetector(
+            onTap: () => _setRegion(r.value),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+              decoration: BoxDecoration(
+                color: active ? AppColors.brandGreen : (isDark ? AppColors.surfaceDark : AppColors.surface),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: active ? AppColors.brandGreen : (isDark ? AppColors.borderDark : AppColors.border),
+                ),
+              ),
+              child: Text(
+                r.label,
+                style: GoogleFonts.inter(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: active ? Colors.white : (isDark ? AppColors.textPrimaryDark : AppColors.textPrimary),
+                ),
               ),
             ),
-          ],
-        ),
+          );
+        }).toList(),
       ),
     );
   }
@@ -606,7 +549,7 @@ JSON format:
                 ),
                 const SizedBox(height: 4),
                 GestureDetector(
-                  onTap: _generateRecipes,
+                  onTap: _filterRecipes,
                   child: Text(
                     'Tap to retry',
                     style: GoogleFonts.inter(
@@ -696,11 +639,12 @@ JSON format:
             const SizedBox(height: 20),
             const Text('🫙', style: TextStyle(fontSize: 48)),
             const SizedBox(height: 12),
-            Text('No recipes generated',
+            Text('No matching recipes',
                 style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w600,
                     color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
             const SizedBox(height: 4),
-            Text('Try adding different ingredients',
+            Text('Try different ingredients or change the region filter',
+                textAlign: TextAlign.center,
                 style: GoogleFonts.inter(fontSize: 13, color: AppColors.textSecondary)),
           ],
         ),
@@ -712,40 +656,16 @@ JSON format:
       children: [
         Row(
           children: [
-            const Text('✨', style: TextStyle(fontSize: 16)),
+            const Text('🍽', style: TextStyle(fontSize: 16)),
             const SizedBox(width: 6),
             Text(
-              '${_recipes!.length} recipes generated',
+              _ingredients.isEmpty
+                  ? '${_recipes!.length} recipes'
+                  : '${_recipes!.length} matching recipes',
               style: GoogleFonts.inter(
                 fontSize: 15,
                 fontWeight: FontWeight.w700,
                 color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
-              ),
-            ),
-            const Spacer(),
-            GestureDetector(
-              onTap: _generateRecipes,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                decoration: BoxDecoration(
-                  color: AppColors.primaryLight,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.refresh, size: 14, color: AppColors.primary),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Regenerate',
-                      style: GoogleFonts.inter(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: AppColors.primary,
-                      ),
-                    ),
-                  ],
-                ),
               ),
             ),
           ],
@@ -755,6 +675,7 @@ JSON format:
               recipe: e.value,
               isDark: isDark,
               index: e.key,
+              matchCount: _ingredients.isEmpty ? -1 : e.value.matchCount(_ingredients),
             )),
       ],
     );
@@ -767,11 +688,14 @@ class _RecipeCard extends StatelessWidget {
   final AiRecipe recipe;
   final bool isDark;
   final int index;
+  // -1 = no filtering active, 0+ = number of matching ingredients
+  final int matchCount;
 
   const _RecipeCard({
     required this.recipe,
     required this.isDark,
     required this.index,
+    this.matchCount = -1,
   });
 
   static const _gradients = [
@@ -824,21 +748,33 @@ class _RecipeCard extends StatelessWidget {
                   Positioned(
                     top: 10,
                     right: 12,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.25),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        recipe.cuisine,
-                        style: GoogleFonts.inter(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                    child: Row(mainAxisSize: MainAxisSize.min, children: [
+                      if (matchCount > 0) ...[
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: AppColors.brandGreen.withOpacity(0.9),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            '$matchCount match${matchCount > 1 ? 'es' : ''}',
+                            style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                      ],
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.black.withOpacity(0.25),
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Text(
+                          recipe.cuisine,
+                          style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                       ),
-                    ),
+                    ]),
                   ),
                 ],
               ),
