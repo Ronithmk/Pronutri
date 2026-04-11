@@ -185,53 +185,49 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
               ),
               const SizedBox(height: 32),
 
-              // OTP Input boxes — responsive width
-              LayoutBuilder(builder: (context, constraints) {
-                final boxSize = ((constraints.maxWidth - 60) / 6).clamp(40.0, 56.0);
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(6, (index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4),
-                      child: SizedBox(
-                        width: boxSize,
-                        height: boxSize + 8,
-                        child: TextField(
-                          controller: _otpControllers[index],
-                          focusNode: _focusNodes[index],
-                          textAlign: TextAlign.center,
-                          keyboardType: TextInputType.number,
-                          maxLength: 1,
-                          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                          decoration: InputDecoration(
-                            counterText: '',
-                            filled: true,
-                            fillColor: isDark ? AppColors.surfaceDark : AppColors.surface,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: isDark ? AppColors.borderDark : AppColors.border),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(color: isDark ? AppColors.borderDark : AppColors.border),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: const BorderSide(color: AppColors.primary, width: 2),
-                            ),
-                            contentPadding: EdgeInsets.zero,
+              // OTP Input boxes
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(6, (index) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    child: SizedBox(
+                      width: 46, height: 54,
+                      child: TextField(
+                        controller: _otpControllers[index],
+                        focusNode: _focusNodes[index],
+                        textAlign: TextAlign.center,
+                        keyboardType: TextInputType.number,
+                        maxLength: 1,
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        decoration: InputDecoration(
+                          counterText: '',
+                          filled: true,
+                          fillColor: isDark ? AppColors.surfaceDark : AppColors.surface,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: isDark ? AppColors.borderDark : AppColors.border),
                           ),
-                          style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w700),
-                          onChanged: (value) {
-                            _onOtpChanged(index, value);
-                            setState(() {});
-                          },
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: BorderSide(color: isDark ? AppColors.borderDark : AppColors.border),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                            borderSide: const BorderSide(color: AppColors.primary, width: 2),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 14),
                         ),
+                        style: GoogleFonts.inter(fontSize: 22, fontWeight: FontWeight.w700),
+                        onChanged: (value) {
+                          _onOtpChanged(index, value);
+                          setState(() {});
+                        },
                       ),
-                    );
-                  }),
-                );
-              }),
+                    ),
+                  );
+                }),
+              ),
               const SizedBox(height: 24),
 
               // Error message

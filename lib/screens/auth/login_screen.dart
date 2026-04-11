@@ -9,6 +9,7 @@ import '../../widgets/app_text_field.dart';
 import '../main_nav_screen.dart';
 import '../trainer_dashboard_screen.dart';
 import '../admin/admin_login_screen.dart';
+import 'forgot_password_screen.dart';
 import 'role_selection_screen.dart';
 import 'trainer_pending_screen.dart';
 import '../../services/notification_service.dart';
@@ -205,7 +206,19 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               validator: (v) => v!.isEmpty ? 'Enter your password' : null,
             ),
-            const SizedBox(height: 28),
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerRight,
+              child: GestureDetector(
+                onTap: () => Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const ForgotPasswordScreen())),
+                child: Text('Forgot password?', style: GoogleFonts.inter(
+                  fontSize: 13, fontWeight: FontWeight.w600,
+                  color: AppColors.brandBlue,
+                )),
+              ),
+            ),
+            const SizedBox(height: 20),
 
             AppButton(label: 'Sign In', onTap: _login, loading: _loading),
             const SizedBox(height: 22),

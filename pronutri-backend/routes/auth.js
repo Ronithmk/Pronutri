@@ -271,6 +271,90 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// ── POST /auth/forgot-password ────────────────────────────────────────────────
+// Send OTP to email for password reset (checks user exists first).
+router.post('/forgot-password', async (req, res) => {
+  const email = _normalizeEmail(req.body?.email);
+  if (!email || !EMAIL_REGEX.test(email)) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+  if (_rateLimit(`forgot:${email}`, 3, 15 * 60 * 1000)) {
+    return res.status(429).json({ error: 'Too many requests. Try again later.' });
+  }
+  try {
+    const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+    if (snap.empty) return res.status(404).json({ error: 'No account found with this email' });
+
+    const code = _generateOtp();
+    _otpStore.set(`reset:${email}`, { otp: code, attempts: 0, expiresAt: Date.now() + 10 * 60 * 1000 });
+
+    const transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST, port: parseInt(process.env.SMTP_PORT || '587'),
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+    });
+    try {
+      await transporter.sendMail({
+        from: `"ProNutri" <${process.env.SMTP_USER}>`,
+        to: email,
+        subject: 'ProNutri - Reset Your Password',
+        html: _otpEmailHtml(code),
+      });
+      return res.json({ sent: true });
+    } catch (_) {
+      return res.json({ sent: true, otp: code }); // dev fallback
+    }
+  } catch (e) {
+    console.error('forgot-password failed:', e && e.message);
+    return res.status(500).json({ error: 'Failed to send reset code' });
+  }
+});
+
+// ── POST /auth/reset-password ─────────────────────────────────────────────────
+// Verify OTP + set new password.
+router.post('/reset-password', async (req, res) => {
+  const email = _normalizeEmail(req.body?.email);
+  const otp = String(req.body?.otp || '').trim();
+  const newPassword = req.body?.newPassword;
+
+  if (!email || !EMAIL_REGEX.test(email)) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+  if (!/^\d{6}$/.test(otp)) {
+    return res.status(400).json({ error: 'Invalid OTP format' });
+  }
+  if (!_isStrongEnoughPassword(newPassword)) {
+    return res.status(400).json({ error: 'Password must be 8-128 characters' });
+  }
+  if (_rateLimit(`reset:${email}`, 10, 15 * 60 * 1000)) {
+    return res.status(429).json({ error: 'Too many attempts. Try again later.' });
+  }
+
+  const entry = _otpStore.get(`reset:${email}`);
+  if (!entry || Date.now() > entry.expiresAt) {
+    _otpStore.delete(`reset:${email}`);
+    return res.status(401).json({ error: 'Invalid or expired code' });
+  }
+  if (entry.otp !== otp) {
+    entry.attempts = (entry.attempts || 0) + 1;
+    if (entry.attempts >= 5) _otpStore.delete(`reset:${email}`);
+    else _otpStore.set(`reset:${email}`, entry);
+    return res.status(401).json({ error: 'Invalid code' });
+  }
+  _otpStore.delete(`reset:${email}`);
+
+  try {
+    const snap = await db.collection('users').where('email', '==', email).limit(1).get();
+    if (snap.empty) return res.status(404).json({ error: 'User not found' });
+    const hash = await bcrypt.hash(newPassword, 12);
+    await db.collection('users').doc(snap.docs[0].id).update({ password: hash });
+    return res.json({ success: true });
+  } catch (e) {
+    console.error('reset-password failed:', e && e.message);
+    return res.status(500).json({ error: 'Failed to reset password' });
+  }
+});
+
 // ── GET /auth/trainer-status ──────────────────────────────────────────────────
 // Trainer polls this after registration to detect admin approval/rejection.
 const authMiddlewareLocal = require('../middleware/auth');
