@@ -37,7 +37,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   void dispose() {
-    for (final c in [_nameCtrl, _emailCtrl, _passCtrl, _confirmCtrl, _weightCtrl, _heightCtrl, _ageCtrl, _targetCtrl]) c.dispose();
+    for (final c in [_nameCtrl, _emailCtrl, _passCtrl, _confirmCtrl, _weightCtrl, _heightCtrl, _ageCtrl, _targetCtrl]) {
+      c.dispose();
+    }
     _pageCtrl.dispose();
     super.dispose();
   }
@@ -50,12 +52,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Color get _bmiColor => _bmi < 18.5 ? AppColors.blue : _bmi < 25 ? AppColors.primary : _bmi < 30 ? AppColors.amber : AppColors.accent;
   String get _bmiCat => _bmi == 0 ? '' : _bmi < 18.5 ? 'Underweight' : _bmi < 25 ? 'Normal' : _bmi < 30 ? 'Overweight' : 'Obese';
 
+  String? _validatePassword(String? v) {
+    if (v == null || v.isEmpty) return 'Enter a password';
+    if (v.length < 6) return 'At least 6 characters required';
+    if (!v.contains(RegExp(r'[0-9]'))) return 'Include at least 1 number';
+    if (!v.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>_\-+=~`\[\]\\;/]'))) {
+      return 'Include at least 1 special character (e.g. @, #, !)';
+    }
+    return null;
+  }
+
   void _next() {
     if (_step == 0 && !_k1.currentState!.validate()) return;
     if (_step == 1 && !_k2.currentState!.validate()) return;
     if (_step == 2) { _submit(); return; }
-    setState(() => _step++);
     _pageCtrl.nextPage(duration: const Duration(milliseconds: 400), curve: Curves.easeInOut);
+    setState(() => _step++);
   }
 
   void _back() {
@@ -89,7 +101,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(result), backgroundColor: AppColors.accent,
         behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.all(16),
       ));
     }
   }
@@ -105,16 +118,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
           padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
           child: Row(children: [
             if (_step > 0)
-              IconButton(onPressed: _back, icon: const Icon(Icons.arrow_back_ios, size: 18),
-                style: IconButton.styleFrom(backgroundColor: isDark ? AppColors.surfaceVariantDark : AppColors.surfaceVariant, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10))))
+              GestureDetector(
+                onTap: _back,
+                child: Container(
+                  width: 40, height: 40,
+                  decoration: BoxDecoration(
+                    color: isDark ? AppColors.surfVarDark : Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(color: AppColors.brandBlue.withOpacity(0.10), blurRadius: 12, offset: const Offset(0, 4)),
+                      BoxShadow(color: Colors.white.withOpacity(isDark ? 0.04 : 0.9), blurRadius: 4, offset: const Offset(-1, -1)),
+                    ],
+                  ),
+                  child: const Icon(Icons.arrow_back_ios_new_rounded, size: 16),
+                ),
+              )
             else const SizedBox(width: 40),
             Expanded(child: Column(children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(4),
-                child: LinearProgressIndicator(
-                  value: (_step + 1) / 3, minHeight: 4,
-                  backgroundColor: isDark ? AppColors.borderDark : AppColors.border,
-                  valueColor: const AlwaysStoppedAnimation(AppColors.primary),
+              Container(
+                height: 7,
+                decoration: BoxDecoration(
+                  color: isDark ? AppColors.borderDark : AppColors.border,
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                child: FractionallySizedBox(
+                  alignment: Alignment.centerLeft,
+                  widthFactor: (_step + 1) / 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(colors: [AppColors.brandBlue, AppColors.brandGreen]),
+                      borderRadius: BorderRadius.circular(6),
+                      boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.4), blurRadius: 6, offset: const Offset(0, 2))],
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 6),
@@ -155,14 +191,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
       Text('Create Account', style: GoogleFonts.inter(fontSize: 28, fontWeight: FontWeight.w800, color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary, letterSpacing: -0.5)),
       const SizedBox(height: 6),
       Text('Join thousands reaching their health goals', style: GoogleFonts.inter(fontSize: 14, color: AppColors.textSecondary)),
-      const SizedBox(height: 32),
+      const SizedBox(height: 16),
+      // ── Welcome bonus banner ───────────────────────────────────────────────
+      Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFF1E6EBD), Color(0xFF2ECC71)],
+            begin: Alignment.centerLeft, end: Alignment.centerRight,
+          ),
+          borderRadius: BorderRadius.circular(22),
+          boxShadow: [
+            BoxShadow(color: AppColors.brandBlue.withOpacity(0.30), blurRadius: 18, offset: const Offset(0, 8)),
+            BoxShadow(color: Colors.white.withOpacity(0.20), blurRadius: 6, offset: const Offset(-2, -2)),
+          ],
+        ),
+        child: Row(children: [
+          const Text('🎁', style: TextStyle(fontSize: 28)),
+          const SizedBox(width: 12),
+          Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text('Register & Get ₹100 Free Credits!',
+              style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w800, color: Colors.white)),
+            const SizedBox(height: 2),
+            Text('+ 30-day free trial • No credit card needed',
+              style: GoogleFonts.inter(fontSize: 11, color: Colors.white.withOpacity(0.85))),
+          ])),
+        ]),
+      ),
+      const SizedBox(height: 20),
       AppTextField(controller: _nameCtrl, label: 'Full Name', hint: 'Your name', icon: Icons.person_outline, validator: (v) => v!.trim().length < 2 ? 'Enter your name' : null),
       const SizedBox(height: 14),
       AppTextField(controller: _emailCtrl, label: 'Email address', hint: 'you@example.com', icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress, validator: (v) => !v!.contains('@') ? 'Enter a valid email' : null),
       const SizedBox(height: 14),
-      AppTextField(controller: _passCtrl, label: 'Password', hint: 'Min 6 characters', icon: Icons.lock_outline, obscure: _obscure,
+      AppTextField(controller: _passCtrl, label: 'Password', hint: 'Min 6 chars, 1 number, 1 symbol', icon: Icons.lock_outline, obscure: _obscure,
         suffix: IconButton(onPressed: () => setState(() => _obscure = !_obscure), icon: Icon(_obscure ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.textSecondary, size: 20)),
-        validator: (v) => v!.length < 6 ? 'Minimum 6 characters' : null),
+        validator: _validatePassword),
       const SizedBox(height: 14),
       AppTextField(controller: _confirmCtrl, label: 'Confirm Password', hint: 'Repeat password', icon: Icons.lock_outline, obscure: true, validator: (v) => v != _passCtrl.text ? 'Passwords do not match' : null),
     ])),
@@ -244,16 +307,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       onTap: () => setState(() => _gender = value),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 16),
         decoration: BoxDecoration(
-          color: sel ? AppColors.primaryLight : isDark ? AppColors.surfaceDark : AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: sel ? AppColors.primary : isDark ? AppColors.borderDark : AppColors.border, width: sel ? 1.5 : 1),
+          color: sel ? AppColors.brandBlue.withOpacity(0.10) : isDark ? AppColors.surfDark : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: sel ? Border.all(color: AppColors.brandBlue, width: 2) : null,
+          boxShadow: [
+            BoxShadow(
+              color: sel ? AppColors.brandBlue.withOpacity(0.20) : (isDark ? Colors.black.withOpacity(0.25) : AppColors.brandBlue.withOpacity(0.08)),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+            BoxShadow(color: Colors.white.withOpacity(isDark ? 0.04 : 0.8), blurRadius: 4, offset: const Offset(-1, -1)),
+          ],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Text(emoji, style: const TextStyle(fontSize: 20)),
+          Text(emoji, style: const TextStyle(fontSize: 22)),
           const SizedBox(width: 8),
-          Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.w600, color: sel ? AppColors.primary : AppColors.textSecondary)),
+          Text(label, style: GoogleFonts.inter(fontWeight: FontWeight.w700, color: sel ? AppColors.brandBlue : AppColors.textSecondary)),
         ]),
       ),
     ));
@@ -266,20 +337,32 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.only(bottom: 10),
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: sel ? AppColors.primaryLight : isDark ? AppColors.surfaceDark : AppColors.surface,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: sel ? AppColors.primary : isDark ? AppColors.borderDark : AppColors.border, width: sel ? 1.5 : 1),
+          color: sel ? AppColors.brandBlue.withOpacity(0.08) : isDark ? AppColors.surfDark : Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: sel ? Border.all(color: AppColors.brandBlue, width: 2) : null,
+          boxShadow: [
+            BoxShadow(
+              color: sel ? AppColors.brandBlue.withOpacity(0.18) : (isDark ? Colors.black.withOpacity(0.25) : AppColors.brandBlue.withOpacity(0.07)),
+              blurRadius: 16, offset: const Offset(0, 7),
+            ),
+            BoxShadow(color: Colors.white.withOpacity(isDark ? 0.04 : 0.8), blurRadius: 4, offset: const Offset(-1, -1)),
+          ],
         ),
         child: Row(children: [
-          Text(emoji, style: const TextStyle(fontSize: 22)),
-          const SizedBox(width: 12),
+          Text(emoji, style: const TextStyle(fontSize: 24)),
+          const SizedBox(width: 14),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 14, color: sel ? AppColors.primary : isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
+            Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 14, color: sel ? AppColors.brandBlue : isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
             Text(subtitle, style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
           ])),
-          if (sel) const Icon(Icons.check_circle, color: AppColors.primary, size: 20),
+          if (sel) Container(
+            width: 24, height: 24,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.brandBlue,
+              boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3))]),
+            child: const Icon(Icons.check, color: Colors.white, size: 14),
+          ),
         ]),
       ),
     );
@@ -292,18 +375,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         margin: const EdgeInsets.only(bottom: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         decoration: BoxDecoration(
-          color: sel ? AppColors.primaryLight : isDark ? AppColors.surfaceDark : AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: sel ? AppColors.primary : isDark ? AppColors.borderDark : AppColors.border, width: sel ? 1.5 : 1),
+          color: sel ? AppColors.brandGreen.withOpacity(0.08) : isDark ? AppColors.surfDark : Colors.white,
+          borderRadius: BorderRadius.circular(18),
+          border: sel ? Border.all(color: AppColors.brandGreen, width: 2) : null,
+          boxShadow: [
+            BoxShadow(
+              color: sel ? AppColors.brandGreen.withOpacity(0.18) : (isDark ? Colors.black.withOpacity(0.20) : AppColors.brandBlue.withOpacity(0.06)),
+              blurRadius: 12, offset: const Offset(0, 5),
+            ),
+            BoxShadow(color: Colors.white.withOpacity(isDark ? 0.04 : 0.8), blurRadius: 4, offset: const Offset(-1, -1)),
+          ],
         ),
         child: Row(children: [
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w600, fontSize: 13, color: sel ? AppColors.primary : isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
+            Text(title, style: GoogleFonts.inter(fontWeight: FontWeight.w700, fontSize: 13, color: sel ? AppColors.brandGreen : isDark ? AppColors.textPrimaryDark : AppColors.textPrimary)),
             Text(subtitle, style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary)),
           ])),
-          if (sel) const Icon(Icons.check_circle, color: AppColors.primary, size: 18),
+          if (sel) Container(
+            width: 22, height: 22,
+            decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.brandGreen,
+              boxShadow: [BoxShadow(color: AppColors.brandGreen.withOpacity(0.35), blurRadius: 8, offset: const Offset(0, 3))]),
+            child: const Icon(Icons.check, color: Colors.white, size: 13),
+          ),
         ]),
       ),
     );

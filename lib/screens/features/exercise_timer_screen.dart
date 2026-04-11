@@ -15,7 +15,8 @@ class _ExerciseTimerScreenState extends State<ExerciseTimerScreen> {
   Timer? _timer, _restTimer;
   int _seconds = 0, _totalSeconds = 0, _restSeconds = 90;
   bool _running = false, _finished = false, _resting = false;
-  int _step = 0, _set = 1, _sets = 3;
+  int _step = 0, _set = 1;
+  final int _sets = 3;
 
   @override
   void dispose() { _timer?.cancel(); _restTimer?.cancel(); super.dispose(); }

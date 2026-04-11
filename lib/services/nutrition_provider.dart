@@ -76,7 +76,11 @@ class NutritionProvider extends ChangeNotifier {
     for (int i = 0; i < 30; i++) {
       final day = now.subtract(Duration(days: i));
       final meals = _mealBox.values.where((m) => m.userId == _userId && m.loggedAt.year == day.year && m.loggedAt.month == day.month && m.loggedAt.day == day.day);
-      if (meals.isNotEmpty) streak++; else if (i > 0) break;
+      if (meals.isNotEmpty) {
+        streak++;
+      } else if (i > 0) {
+        break;
+      }
     }
     return streak;
   }

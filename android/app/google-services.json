@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "135701411728",
+    "project_id": "pronutri-3d0b9",
+    "storage_bucket": "pronutri-3d0b9.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135701411728:android:67f5a8353149508c5d2515",
+        "android_client_info": {
+          "package_name": "com.pronutri.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCnQ97IgLl79nazR95Imtp3XPItV-0a3qU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

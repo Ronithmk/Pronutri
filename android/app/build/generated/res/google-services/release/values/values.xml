@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gcm_defaultSenderId" translatable="false">135701411728</string>
+    <string name="google_api_key" translatable="false">AIzaSyCnQ97IgLl79nazR95Imtp3XPItV-0a3qU</string>
+    <string name="google_app_id" translatable="false">1:135701411728:android:67f5a8353149508c5d2515</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCnQ97IgLl79nazR95Imtp3XPItV-0a3qU</string>
+    <string name="google_storage_bucket" translatable="false">pronutri-3d0b9.firebasestorage.app</string>
+    <string name="project_id" translatable="false">pronutri-3d0b9</string>
+</resources>

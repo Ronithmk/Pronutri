@@ -1,0 +1,13 @@
+{
+    "email":  "trainerqa1775656254@example.com",
+    "applyRaw":  "{\"error\":\"Unexpected token \u0027\\\\\u0027, \\\"[\\\\\\\" is not valid JSON\"}",
+    "uid":  "BW5BTw99YLXrHtYLY2k6",
+    "password":  "Trainer@1234",
+    "register":  {
+                     "token":  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJCVzVCVHc5OVlMWHJIdFlMWTJrNiIsImVtYWlsIjoidHJhaW5lcnFhMTc3NTY1NjI1NEBleGFtcGxlLmNvbSIsImlhdCI6MTc3NTYzNjQ1NSwiZXhwIjoxNzc2MjQxMjU1fQ.Y5d12suKUuQaMH-NWpVoU6OYC5umJ3gCxCJwkFRKd_Q",
+                     "uid":  "BW5BTw99YLXrHtYLY2k6",
+                     "name":  "Trainer QA",
+                     "email":  "trainerqa1775656254@example.com",
+                     "role":  "user"
+                 }
+}

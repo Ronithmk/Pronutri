@@ -3,7 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import '../theme/app_theme.dart';
 import 'auth/login_screen.dart';
-import 'auth/register_screen.dart';
+import 'auth/role_selection_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -70,7 +70,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   void _done() {
     Hive.box('settings').put('onboardingDone', true);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RegisterScreen()));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const RoleSelectionScreen()));
   }
 }
 

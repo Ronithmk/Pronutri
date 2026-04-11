@@ -171,7 +171,7 @@ class _MealLoggerScreenState extends State<MealLoggerScreen> {
                 Navigator.pop(ctx);
                 final userId = Provider.of<AuthProvider>(context, listen: false).currentUser?.id ?? '';
                 p.addMeal(MealLog(foodName: food.name, emoji: food.emoji, calories: food.calories, protein: food.protein, carbs: food.carbs, fat: food.fat, loggedAt: DateTime.now(), mealType: _mealType, quantity: qty, serving: food.serving, userId: userId));
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('✓ Added ${qty}× ${food.name}'), backgroundColor: AppColors.primary, behavior: SnackBarBehavior.floating, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))));
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('✓ Added $qty× ${food.name}'), backgroundColor: AppColors.primary, behavior: SnackBarBehavior.floating, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))));
               },
               child: Text('Add to $_mealType'),
             )),
