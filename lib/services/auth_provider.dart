@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
+import '../utils/unit_helper.dart';
 import 'api_service.dart';
 import 'otp_service.dart';
 
@@ -17,9 +18,9 @@ class AuthProvider extends ChangeNotifier {
 
   // ── Boot: restore session from SharedPreferences ──────────────
   Future<void> init() async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('jwt_token');
+    final token = await ApiService.readToken();
     if (token == null) return;
+    final prefs = await SharedPreferences.getInstance();
 
     // Restore user from saved prefs
     _currentUser = UserModel(
@@ -43,6 +44,10 @@ class AuthProvider extends ChangeNotifier {
       specializations:     (prefs.getStringList('trainer_specs') ?? []),
       yearsExperience:     prefs.getInt('trainer_years') ?? 0,
       bio:                 prefs.getString('trainer_bio') ?? '',
+      country:             prefs.getString('user_country') ?? 'India',
+      weightUnit:          prefs.getString('weight_unit') ?? 'kg',
+      heightUnit:          prefs.getString('height_unit') ?? 'cm',
+      distanceUnit:        prefs.getString('distance_unit') ?? 'km',
     );
     notifyListeners();
   }
@@ -108,8 +113,7 @@ class AuthProvider extends ChangeNotifier {
       }
 
       // Save JWT token NOW so ApiService can authenticate the /trainer/apply call below
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('jwt_token', res['token'] as String);
+      await ApiService.saveToken(res['token'] as String);
 
       // Upload document + trainer profile to backend
       final docPath = _pendingRegistration!['document_path'] as String;
@@ -174,6 +178,7 @@ class AuthProvider extends ChangeNotifier {
     required String goal,
     required String activityLevel,
     required double targetWeight,
+    String country = 'India',
   }) async {
     final normalizedEmail = email.toLowerCase().trim();
     // Store the registration data temporarily
@@ -188,6 +193,7 @@ class AuthProvider extends ChangeNotifier {
       'goal': goal,
       'activityLevel': activityLevel,
       'targetWeight': targetWeight,
+      'country': country,
     };
 
     // Send OTP
@@ -235,6 +241,7 @@ class AuthProvider extends ChangeNotifier {
         goal: _pendingRegistration!['goal'],
         activityLevel: _pendingRegistration!['activityLevel'],
         targetWeight: _pendingRegistration!['targetWeight'],
+        country: _pendingRegistration!['country'] ?? 'India',
       );
 
       _pendingRegistration = null; // Clear temp data
@@ -335,13 +342,20 @@ class AuthProvider extends ChangeNotifier {
 
       final prefs = await SharedPreferences.getInstance();
 
+      if (res['token'] == null || res['uid'] == null) {
+        _error = 'Login failed. Please try again.';
+        _isLoading = false;
+        notifyListeners();
+        return _error;
+      }
+
       // Normalize backend role: old server sends 'user', new sends 'learner'
       final rawRole = res['role'] as String? ?? 'learner';
       final normalizedRole = (rawRole == 'user') ? 'learner' : rawRole;
 
       await _saveSession(
-        token:               res['token'],
-        uid:                 res['uid'],
+        token:               res['token'] as String,
+        uid:                 res['uid'] as String,
         name:                res['name'] ?? prefs.getString('user_name') ?? '',
         email:               normalizedEmail,
         credits:             res['credits'] ?? 100,
@@ -450,8 +464,8 @@ class AuthProvider extends ChangeNotifier {
     required String email,
     required String token,
   }) async {
+    await ApiService.saveToken(token);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('jwt_token',  token);
     await prefs.setString('uid',        uid);
     await prefs.setString('user_name',  name);
     await prefs.setString('user_email', email);
@@ -484,6 +498,7 @@ class AuthProvider extends ChangeNotifier {
 
   // ── Logout ────────────────────────────────────────────────────
   Future<void> logout() async {
+    await ApiService.deleteToken();
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
     _currentUser = null;
@@ -511,9 +526,14 @@ class AuthProvider extends ChangeNotifier {
     List<String> specializations  = const [],
     int yearsExperience           = 0,
     String bio                    = '',
+    String country                = 'India',
   }) async {
+    final wUnit = UnitHelper.weightUnit(country);
+    final hUnit = UnitHelper.heightUnit(country);
+    final dUnit = UnitHelper.distanceUnit(country);
+
+    await ApiService.saveToken(token);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('jwt_token',           token);
     await prefs.setString('uid',                 uid);
     await prefs.setString('user_name',           name);
     await prefs.setString('user_email',          email);
@@ -532,6 +552,10 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setStringList('trainer_specs',   specializations);
     await prefs.setInt('trainer_years',          yearsExperience);
     await prefs.setString('trainer_bio',         bio);
+    await prefs.setString('user_country',        country);
+    await prefs.setString('weight_unit',         wUnit);
+    await prefs.setString('height_unit',         hUnit);
+    await prefs.setString('distance_unit',       dUnit);
 
     _currentUser = UserModel(
       id:                 uid,
@@ -554,6 +578,10 @@ class AuthProvider extends ChangeNotifier {
       specializations:    specializations,
       yearsExperience:    yearsExperience,
       bio:                bio,
+      country:            country,
+      weightUnit:         wUnit,
+      heightUnit:         hUnit,
+      distanceUnit:       dUnit,
     );
   }
 }

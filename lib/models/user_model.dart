@@ -31,6 +31,18 @@ class UserModel {
   /// Short professional bio (trainers only)
   final String bio;
 
+  /// Country selected at registration — drives meal suggestions
+  final String country;
+
+  /// Display unit for weight: 'kg' or 'lbs' (derived from country)
+  final String weightUnit;
+
+  /// Display unit for height: 'cm' or 'ft' (derived from country)
+  final String heightUnit;
+
+  /// Display unit for distance: 'km' or 'miles' (derived from country)
+  final String distanceUnit;
+
   UserModel({
     required this.id,
     required this.name,
@@ -52,7 +64,13 @@ class UserModel {
     this.specializations    = const [],
     this.yearsExperience    = 0,
     this.bio                = '',
+    this.country            = 'India',
+    this.weightUnit         = 'kg',
+    this.heightUnit         = 'cm',
+    this.distanceUnit       = 'km',
   }) : trialEnd = trialEnd ?? DateTime.now().add(const Duration(days: 30));
+
+  bool get isImperial => weightUnit == 'lbs';
 
   // ── Role helpers ──────────────────────────────────────────────────────────
   bool get isTrainer          => role == 'trainer';
@@ -114,6 +132,10 @@ class UserModel {
     List<String>? specializations,
     int? yearsExperience,
     String? bio,
+    String? country,
+    String? weightUnit,
+    String? heightUnit,
+    String? distanceUnit,
   }) => UserModel(
     id:                 id                ?? this.id,
     name:               name              ?? this.name,
@@ -135,5 +157,9 @@ class UserModel {
     specializations:    specializations   ?? this.specializations,
     yearsExperience:    yearsExperience   ?? this.yearsExperience,
     bio:                bio               ?? this.bio,
+    country:            country           ?? this.country,
+    weightUnit:         weightUnit        ?? this.weightUnit,
+    heightUnit:         heightUnit        ?? this.heightUnit,
+    distanceUnit:       distanceUnit      ?? this.distanceUnit,
   );
 }

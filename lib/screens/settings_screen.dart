@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/nutrition_provider.dart';
+import '../utils/unit_helper.dart';
 import '../services/theme_provider.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_button.dart';
@@ -28,11 +29,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void initState() {
     super.initState();
     final u = Provider.of<AuthProvider>(context, listen: false).currentUser;
+    final country = u?.country ?? 'India';
     _nameCtrl = TextEditingController(text: u?.name ?? '');
-    _weightCtrl = TextEditingController(text: u?.weight.toString() ?? '');
-    _heightCtrl = TextEditingController(text: u?.height.toString() ?? '');
+    _weightCtrl = TextEditingController(text: UnitHelper.weightForField(u?.weight ?? 70, country));
+    _heightCtrl = TextEditingController(text: UnitHelper.heightForField(u?.height ?? 170, country));
     _ageCtrl = TextEditingController(text: u?.age.toString() ?? '');
-    _targetCtrl = TextEditingController(text: u?.targetWeight.toString() ?? '');
+    _targetCtrl = TextEditingController(text: UnitHelper.weightForField(u?.targetWeight ?? 70, country));
   }
 
   @override
@@ -48,12 +50,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
   void _save() {
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final nutrition = Provider.of<NutritionProvider>(context, listen: false);
+    final country = auth.currentUser?.country ?? 'India';
     auth.updateProfile(
       name: _nameCtrl.text,
-      weight: double.tryParse(_weightCtrl.text),
-      height: double.tryParse(_heightCtrl.text),
+      weight: UnitHelper.parseWeightToKg(_weightCtrl.text, country),
+      height: UnitHelper.parseHeightToCm(_heightCtrl.text, country),
       age: int.tryParse(_ageCtrl.text),
-      targetWeight: double.tryParse(_targetCtrl.text),
+      targetWeight: UnitHelper.parseWeightToKg(_targetCtrl.text, country),
     );
     nutrition.setUser(auth.currentUser);
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -213,7 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.40), blurRadius: 14, offset: const Offset(0, 6))],
           ),
           child: Center(child: Text(
-            user?.name.isNotEmpty == true ? user!.name[0].toUpperCase() : 'U',
+            (user != null && user.name.isNotEmpty) ? user.name[0].toUpperCase() : 'U',
             style: GoogleFonts.inter(fontSize: 26, fontWeight: FontWeight.w800, color: Colors.white),
           )),
         ),
@@ -236,29 +239,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Widget _buildProfileForm(bool isDark) {
+    final country = Provider.of<AuthProvider>(context, listen: false).currentUser?.country ?? 'India';
     return _card(isDark, Column(children: [
       AppTextField(controller: _nameCtrl, label: 'Name', hint: 'Your name', icon: Icons.person_outline),
       const SizedBox(height: 14),
       Row(children: [
-        Expanded(child: AppTextField(controller: _weightCtrl, label: 'Weight (kg)', hint: '70', icon: Icons.monitor_weight_outlined, keyboardType: TextInputType.number)),
+        Expanded(child: AppTextField(controller: _weightCtrl, label: UnitHelper.weightLabel(country), hint: UnitHelper.isImperial(country) ? '154' : '70', icon: Icons.monitor_weight_outlined, keyboardType: TextInputType.number)),
         const SizedBox(width: 12),
-        Expanded(child: AppTextField(controller: _heightCtrl, label: 'Height (cm)', hint: '170', icon: Icons.height, keyboardType: TextInputType.number)),
+        Expanded(child: AppTextField(controller: _heightCtrl, label: UnitHelper.heightLabel(country), hint: UnitHelper.isImperial(country) ? '5.7' : '170', icon: Icons.height, keyboardType: TextInputType.number)),
       ]),
       const SizedBox(height: 14),
       Row(children: [
         Expanded(child: AppTextField(controller: _ageCtrl, label: 'Age', hint: '25', icon: Icons.cake_outlined, keyboardType: TextInputType.number)),
         const SizedBox(width: 12),
-        Expanded(child: AppTextField(controller: _targetCtrl, label: 'Target (kg)', hint: '65', icon: Icons.flag_outlined, keyboardType: TextInputType.number)),
+        Expanded(child: AppTextField(controller: _targetCtrl, label: UnitHelper.targetWeightLabel(country), hint: UnitHelper.isImperial(country) ? '140' : '65', icon: Icons.flag_outlined, keyboardType: TextInputType.number)),
       ]),
     ]));
   }
 
   Widget _buildSubscriptionCard(user, bool isDark) {
     if (user == null) return const SizedBox.shrink();
-    final isPro    = user.subscriptionActive as bool;
-    final isTrial  = user.isTrialActive as bool;
-    final daysLeft = user.trialDaysLeft as int;
-    final credits  = user.credits as int;
+    final isPro    = user.subscriptionActive == true;
+    final isTrial  = user.isTrialActive == true;
+    final daysLeft = user.trialDaysLeft as int? ?? 0;
+    final credits  = user.credits as int? ?? 0;
 
     return _card(isDark, Column(children: [
       Row(children: [

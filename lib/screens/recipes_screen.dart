@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../data/recipe_data.dart';
+import '../services/auth_provider.dart';
 import '../theme/app_theme.dart';
 
 // ─────────────────────────── Model ───────────────────────────
@@ -83,12 +86,113 @@ class _RecipesScreenState extends State<RecipesScreen>
 
   // Region filter: null = All
   String? _regionFilter;
+  String _userCountry = 'India';
 
-  static const _suggestions = [
-    'Chicken', 'Rice', 'Paneer', 'Eggs', 'Tomato', 'Onion',
-    'Dal', 'Potato', 'Spinach', 'Coconut', 'Lemon', 'Oats',
-    'Fish', 'Yogurt', 'Garlic', 'Ginger',
-  ];
+  List<String> get _suggestions => _suggestionsForCountry(_userCountry);
+
+  static List<String> _suggestionsForCountry(String country) {
+    switch (country) {
+      case 'USA': case 'Canada': case 'Australia': case 'New Zealand':
+        return ['Chicken', 'Beef', 'Salmon', 'Eggs', 'Avocado', 'Cheese',
+                'Broccoli', 'Potato', 'Oats', 'Berries', 'Garlic', 'Tomato'];
+      case 'UK':
+        return ['Chicken', 'Beef', 'Cod', 'Eggs', 'Potato', 'Mushroom',
+                'Peas', 'Beans', 'Onion', 'Cheese', 'Lamb', 'Carrot'];
+      case 'Saudi Arabia': case 'UAE': case 'Lebanon': case 'Egypt': case 'Turkey':
+        return ['Chicken', 'Lamb', 'Chickpeas', 'Tahini', 'Tomato', 'Onion',
+                'Garlic', 'Parsley', 'Lemon', 'Pita', 'Eggplant', 'Cumin'];
+      case 'Japan':
+        return ['Salmon', 'Tofu', 'Miso', 'Rice', 'Soy Sauce', 'Nori',
+                'Egg', 'Mushroom', 'Spring Onion', 'Sesame', 'Dashi', 'Mirin'];
+      case 'China':
+        return ['Chicken', 'Rice', 'Soy Sauce', 'Garlic', 'Ginger', 'Egg',
+                'Tofu', 'Bok Choy', 'Sesame Oil', 'Spring Onion', 'Oyster Sauce', 'Pork'];
+      case 'South Korea':
+        return ['Beef', 'Kimchi', 'Rice', 'Gochujang', 'Sesame', 'Egg',
+                'Spinach', 'Carrot', 'Soy Sauce', 'Garlic', 'Spring Onion', 'Tofu'];
+      case 'Thailand': case 'Vietnam': case 'Indonesia': case 'Malaysia':
+      case 'Philippines': case 'Singapore':
+        return ['Chicken', 'Rice', 'Fish Sauce', 'Lemongrass', 'Coconut Milk',
+                'Chilli', 'Lime', 'Garlic', 'Prawn', 'Ginger', 'Coriander', 'Basil'];
+      case 'Italy': case 'France': case 'Spain': case 'Greece': case 'Portugal':
+        return ['Pasta', 'Tomato', 'Olive Oil', 'Garlic', 'Onion', 'Parmesan',
+                'Basil', 'Lemon', 'Chicken', 'Beef', 'Mozzarella', 'Egg'];
+      case 'Mexico': case 'Brazil': case 'Argentina': case 'Colombia': case 'Peru':
+        return ['Chicken', 'Beef', 'Tortilla', 'Avocado', 'Tomato', 'Onion',
+                'Lime', 'Coriander', 'Chilli', 'Rice', 'Beans', 'Corn'];
+      case 'Nigeria': case 'Ethiopia': case 'South Africa':
+        return ['Chicken', 'Beef', 'Rice', 'Tomato', 'Onion', 'Palm Oil',
+                'Chilli', 'Coriander', 'Garlic', 'Ginger', 'Peanuts', 'Spinach'];
+      case 'Germany': case 'Russia': case 'Poland':
+        return ['Pork', 'Beef', 'Potato', 'Onion', 'Mushroom', 'Sauerkraut',
+                'Beetroot', 'Carrot', 'Butter', 'Sour Cream', 'Cabbage', 'Egg'];
+      case 'Pakistan': case 'Bangladesh':
+        return ['Chicken', 'Beef', 'Mutton', 'Rice', 'Onion', 'Tomato',
+                'Garlic', 'Ginger', 'Chilli', 'Coriander', 'Yogurt', 'Ghee'];
+      default: // India and South Asian
+        return ['Chicken', 'Rice', 'Paneer', 'Eggs', 'Tomato', 'Onion',
+                'Dal', 'Potato', 'Spinach', 'Coconut', 'Lemon', 'Oats',
+                'Fish', 'Yogurt', 'Garlic', 'Ginger'];
+    }
+  }
+
+  static List<({String label, String? value})> _regionsForCountry(String country) {
+    switch (country) {
+      case 'India': case 'Sri Lanka': case 'Nepal':
+        return [(label: 'All', value: null), (label: '🌶 North Indian', value: 'North Indian'),
+                (label: '🥥 South Indian', value: 'South Indian'), (label: '🍃 Healthy', value: 'Indian')];
+      case 'Pakistan': case 'Bangladesh':
+        return [(label: 'All', value: null), (label: '🍛 South Asian', value: 'South Asian'),
+                (label: '🌶 North Indian', value: 'North Indian'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'USA': case 'Canada': case 'Australia': case 'New Zealand':
+        return [(label: 'All', value: null), (label: '🍔 American', value: 'American'),
+                (label: '🌮 Mexican', value: 'Mexican'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'UK':
+        return [(label: 'All', value: null), (label: '🇬🇧 British', value: 'British'),
+                (label: '🍝 Mediterranean', value: 'Mediterranean'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'Saudi Arabia': case 'UAE': case 'Lebanon': case 'Egypt': case 'Turkey':
+        return [(label: 'All', value: null), (label: '🧆 Middle Eastern', value: 'Middle Eastern'),
+                (label: '🍝 Mediterranean', value: 'Mediterranean'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'Japan': case 'China': case 'South Korea':
+      case 'Thailand': case 'Vietnam': case 'Indonesia':
+      case 'Malaysia': case 'Philippines': case 'Singapore':
+        return [(label: 'All', value: null), (label: '🥢 East Asian', value: 'East Asian'),
+                (label: '🍃 Healthy', value: 'Healthy'), (label: '🍔 Western', value: 'American')];
+      case 'Italy': case 'France': case 'Spain': case 'Greece': case 'Portugal':
+        return [(label: 'All', value: null), (label: '🍝 Mediterranean', value: 'Mediterranean'),
+                (label: '🧆 Middle Eastern', value: 'Middle Eastern'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'Mexico': case 'Brazil': case 'Argentina': case 'Colombia': case 'Peru':
+        return [(label: 'All', value: null), (label: '🌮 Latin American', value: 'Mexican'),
+                (label: '🍔 American', value: 'American'), (label: '🍃 Healthy', value: 'Healthy')];
+      case 'Nigeria': case 'Ethiopia': case 'South Africa':
+        return [(label: 'All', value: null), (label: '🫕 African', value: 'African'),
+                (label: '🍃 Healthy', value: 'Healthy'), (label: '🍔 Western', value: 'American')];
+      case 'Germany': case 'Russia': case 'Poland':
+        return [(label: 'All', value: null), (label: '🥩 European', value: 'European'),
+                (label: '🍝 Mediterranean', value: 'Mediterranean'), (label: '🍃 Healthy', value: 'Healthy')];
+      default:
+        return [(label: 'All', value: null), (label: '🍃 Healthy', value: 'Healthy'),
+                (label: '🌶 Indian', value: 'North Indian'), (label: '🍝 Mediterranean', value: 'Mediterranean')];
+    }
+  }
+
+  static String? _defaultRegionForCountry(String country) {
+    switch (country) {
+      case 'India': case 'Sri Lanka': case 'Nepal': return 'North Indian';
+      case 'Pakistan': case 'Bangladesh': return 'South Asian';
+      case 'USA': case 'Canada': case 'Australia': case 'New Zealand': return 'American';
+      case 'UK': return 'British';
+      case 'Saudi Arabia': case 'UAE': case 'Lebanon': case 'Egypt': case 'Turkey': return 'Middle Eastern';
+      case 'Japan': case 'China': case 'South Korea':
+      case 'Thailand': case 'Vietnam': case 'Indonesia':
+      case 'Malaysia': case 'Philippines': case 'Singapore': return 'East Asian';
+      case 'Italy': case 'France': case 'Spain': case 'Greece': case 'Portugal': return 'Mediterranean';
+      case 'Mexico': case 'Brazil': case 'Argentina': case 'Colombia': case 'Peru': return 'Mexican';
+      case 'Nigeria': case 'Ethiopia': case 'South Africa': return 'African';
+      case 'Germany': case 'Russia': case 'Poland': return 'European';
+      default: return null;
+    }
+  }
 
   @override
   void initState() {
@@ -97,8 +201,15 @@ class _RecipesScreenState extends State<RecipesScreen>
       vsync: this,
       duration: const Duration(milliseconds: 1400),
     )..repeat();
-    // Show all recipes on first load
-    _recipes = List<AiRecipe>.from(kAllRecipes);
+    final country = Provider.of<AuthProvider>(context, listen: false).currentUser?.country ?? 'India';
+    _userCountry = country;
+    _regionFilter = _defaultRegionForCountry(country);
+    // Seed the initial recipe list directly — no setState in initState
+    var pool = List<AiRecipe>.from(kAllRecipes);
+    if (_regionFilter != null) {
+      pool = pool.where((r) => r.cuisine == _regionFilter).toList();
+    }
+    _recipes = pool;
   }
 
   @override
@@ -170,6 +281,8 @@ class _RecipesScreenState extends State<RecipesScreen>
     ));
   }
 
+  bool _showIngredientSearch = false;
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
@@ -185,23 +298,67 @@ class _RecipesScreenState extends State<RecipesScreen>
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildSearchBar(isDark),
-                  const SizedBox(height: 16),
-                  if (_ingredients.isNotEmpty) ...[
-                    _buildIngredientChips(isDark),
-                    const SizedBox(height: 16),
-                  ],
-                  if (_ingredients.isEmpty) ...[
-                    _buildSuggestions(isDark),
-                    const SizedBox(height: 16),
-                  ],
+                  // ── Cuisine filter tabs ─────────────────────────────
                   _buildGenerateButton(isDark),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 16),
+                  // ── Ingredient filter toggle ────────────────────────
+                  GestureDetector(
+                    onTap: () => setState(() => _showIngredientSearch = !_showIngredientSearch),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: _ingredients.isNotEmpty
+                            ? AppColors.primary.withOpacity(0.1)
+                            : (isDark ? AppColors.surfaceDark : AppColors.surface),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _ingredients.isNotEmpty
+                              ? AppColors.primary.withOpacity(0.4)
+                              : (isDark ? AppColors.borderDark : AppColors.border),
+                        ),
+                      ),
+                      child: Row(children: [
+                        Icon(Icons.tune_rounded,
+                            size: 18,
+                            color: _ingredients.isNotEmpty ? AppColors.primary : AppColors.textSecondary),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _ingredients.isEmpty
+                                ? 'Filter by ingredients in your kitchen'
+                                : '${_ingredients.length} ingredient${_ingredients.length > 1 ? 's' : ''} filtering recipes',
+                            style: GoogleFonts.inter(
+                              fontSize: 13,
+                              color: _ingredients.isNotEmpty ? AppColors.primary : AppColors.textSecondary,
+                              fontWeight: _ingredients.isNotEmpty ? FontWeight.w600 : FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                        Icon(
+                          _showIngredientSearch ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                          size: 18,
+                          color: AppColors.textSecondary,
+                        ),
+                      ]),
+                    ),
+                  ),
+                  if (_showIngredientSearch) ...[
+                    const SizedBox(height: 12),
+                    _buildSearchBar(isDark),
+                    const SizedBox(height: 12),
+                    if (_ingredients.isNotEmpty) ...[
+                      _buildIngredientChips(isDark),
+                      const SizedBox(height: 12),
+                    ] else ...[
+                      _buildSuggestions(isDark),
+                      const SizedBox(height: 12),
+                    ],
+                  ],
+                  const SizedBox(height: 12),
+                  // ── Recipe list ─────────────────────────────────────
                   if (_loading) _buildSkeletons(isDark),
                   if (_error != null) _buildError(isDark),
                   if (_recipes != null && !_loading) _buildResults(isDark),
-                  if (_recipes == null && !_loading && _error == null)
-                    _buildEmptyState(isDark),
                   const SizedBox(height: 40),
                 ],
               ),
@@ -226,7 +383,7 @@ class _RecipesScreenState extends State<RecipesScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Indian Recipes',
+              'Recipes 🍽',
               style: GoogleFonts.inter(
                 fontSize: 22,
                 fontWeight: FontWeight.w800,
@@ -234,7 +391,7 @@ class _RecipesScreenState extends State<RecipesScreen>
               ),
             ),
             Text(
-              'Select ingredients to find matching recipes',
+              'Tap any recipe to see how to cook it',
               style: GoogleFonts.inter(
                 fontSize: 11,
                 color: AppColors.textSecondary,
@@ -466,12 +623,7 @@ class _RecipesScreenState extends State<RecipesScreen>
   }
 
   Widget _buildGenerateButton(bool isDark) {
-    const regions = [
-      (label: 'All', value: null),
-      (label: '🌶 North Indian', value: 'North Indian'),
-      (label: '🥥 South Indian', value: 'South Indian'),
-      (label: '🍃 Healthy', value: 'Indian'),
-    ];
+    final regions = _regionsForCountry(_userCountry);
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Row(
@@ -563,70 +715,6 @@ class _RecipesScreenState extends State<RecipesScreen>
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildEmptyState(bool isDark) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 40),
-        child: Column(
-          children: [
-            Container(
-              width: 100,
-              height: 100,
-              decoration: const BoxDecoration(
-                color: AppColors.primaryLight,
-                shape: BoxShape.circle,
-              ),
-              child: const Center(child: Text('👨‍🍳', style: TextStyle(fontSize: 48))),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Your personal AI chef',
-              style: GoogleFonts.inter(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Add ingredients from your kitchen\nand get 3 custom AI-generated recipes',
-              textAlign: TextAlign.center,
-              style: GoogleFonts.inter(
-                fontSize: 13,
-                color: AppColors.textSecondary,
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: AppColors.primaryLight,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('✨', style: TextStyle(fontSize: 14)),
-                  const SizedBox(width: 6),
-                  Text(
-                    'Recipes match your fitness goal',
-                    style: GoogleFonts.inter(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.primaryDark,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -934,9 +1022,17 @@ class _SkeletonCard extends StatelessWidget {
 
 // ─────────────────────────── Detail Screen ───────────────────────────
 
-class RecipeDetailScreen extends StatelessWidget {
+class RecipeDetailScreen extends StatefulWidget {
   final AiRecipe recipe;
   const RecipeDetailScreen({super.key, required this.recipe});
+
+  @override
+  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+}
+
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  // Ingredients the user says they already have
+  final Set<int> _haveIndices = {};
 
   static const _gradients = [
     [Color(0xFF4CAF50), Color(0xFF81C784)],
@@ -944,9 +1040,49 @@ class RecipeDetailScreen extends StatelessWidget {
     [Color(0xFFFF9800), Color(0xFFFFB74D)],
   ];
 
+  List<String> get _missingIngredients => widget.recipe.ingredients
+      .asMap()
+      .entries
+      .where((e) => !_haveIndices.contains(e.key))
+      .map((e) => e.value)
+      .toList();
+
+  // Strips leading quantities like "500g", "1 cup", "2 tbsp" to get the food name
+  String _coreName(String ing) {
+    return ing
+        .replaceAll(RegExp(r'^\d+[\w/]*\s+'), '')
+        .replaceAll(RegExp(r'^\d+\s+'), '')
+        .replaceFirst(RegExp(r'^(cup|tbsp|tsp|g|ml|kg|piece|handful|pinch)\s+', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\(.*?\)'), '')
+        .trim()
+        .split(' ')
+        .take(3)
+        .join(' ');
+  }
+
+  Future<void> _openApp(String baseUrl, List<String> ingredients) async {
+    final query = Uri.encodeComponent(ingredients.map(_coreName).join(' '));
+    final uri = Uri.parse('$baseUrl$query');
+    if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open app'),
+            backgroundColor: AppColors.accent,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          ),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final missing = _missingIngredients;
+    final recipe = widget.recipe;
+
     return Scaffold(
       backgroundColor: isDark ? AppColors.bgDark : AppColors.bg,
       body: CustomScrollView(
@@ -1050,29 +1186,81 @@ class RecipeDetailScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 24),
 
-                  // Ingredients
+                  // Ingredients — with "I have this" toggles
                   _sectionHeader('Ingredients', '${recipe.ingredients.length} items', isDark),
+                  const SizedBox(height: 6),
+                  Text(
+                    'Tap ingredients you already have at home',
+                    style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+                  ),
                   const SizedBox(height: 12),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: recipe.ingredients.map((ing) => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-                      decoration: BoxDecoration(
-                        color: AppColors.primaryLight,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.primary.withOpacity(0.2)),
-                      ),
-                      child: Text(
-                        ing,
-                        style: GoogleFonts.inter(
-                          fontSize: 13,
-                          fontWeight: FontWeight.w500,
-                          color: AppColors.primaryDark,
+                    children: recipe.ingredients.asMap().entries.map((entry) {
+                      final have = _haveIndices.contains(entry.key);
+                      return GestureDetector(
+                        onTap: () => setState(() {
+                          if (have) {
+                            _haveIndices.remove(entry.key);
+                          } else {
+                            _haveIndices.add(entry.key);
+                          }
+                        }),
+                        child: AnimatedContainer(
+                          duration: const Duration(milliseconds: 200),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                          decoration: BoxDecoration(
+                            color: have ? AppColors.brandGreen.withOpacity(0.15) : AppColors.primaryLight,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: have ? AppColors.brandGreen : AppColors.primary.withOpacity(0.2),
+                              width: have ? 1.5 : 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                have ? Icons.check_circle : Icons.radio_button_unchecked,
+                                size: 14,
+                                color: have ? AppColors.brandGreen : AppColors.primary.withOpacity(0.5),
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                entry.value,
+                                style: GoogleFonts.inter(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.w500,
+                                  color: have ? AppColors.brandGreen : AppColors.primaryDark,
+                                  decoration: have ? TextDecoration.lineThrough : null,
+                                  decorationColor: AppColors.brandGreen,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    )).toList(),
+                      );
+                    }).toList(),
                   ),
+                  if (_haveIndices.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Icon(Icons.check_circle, size: 14, color: AppColors.brandGreen),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${_haveIndices.length} of ${recipe.ingredients.length} ingredients available',
+                          style: GoogleFonts.inter(fontSize: 12, color: AppColors.brandGreen, fontWeight: FontWeight.w600),
+                        ),
+                      ],
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+
+                  // Order missing ingredients
+                  if (missing.isNotEmpty) _buildOrderSection(missing, isDark),
+
                   const SizedBox(height: 24),
 
                   // Steps
@@ -1196,6 +1384,130 @@ class RecipeDetailScreen extends StatelessWidget {
           style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
         ),
       ],
+    );
+  }
+
+  Widget _buildOrderSection(List<String> missing, bool isDark) {
+    const apps = [
+      (
+        name: 'Blinkit',
+        emoji: '💛',
+        color: Color(0xFFF8CB2E),
+        textColor: Color(0xFF1A1A1A),
+        url: 'https://blinkit.com/s/?q=',
+      ),
+      (
+        name: 'Zepto',
+        emoji: '⚡',
+        color: Color(0xFF8B2FC9),
+        textColor: Colors.white,
+        url: 'https://www.zeptonow.com/search?query=',
+      ),
+      (
+        name: 'Instamart',
+        emoji: '🛒',
+        color: Color(0xFFFC8019),
+        textColor: Colors.white,
+        url: 'https://www.swiggy.com/instamart/search?query=',
+      ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : const Color(0xFFFFF8E7),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: isDark ? AppColors.borderDark : const Color(0xFFFFE0A0),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Text('🛍', style: TextStyle(fontSize: 18)),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  '${missing.length} ingredient${missing.length > 1 ? 's' : ''} needed',
+                  style: GoogleFonts.inter(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Order all missing ingredients via quick commerce:',
+            style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary),
+          ),
+          const SizedBox(height: 12),
+          // Missing ingredient chips (read-only preview)
+          Wrap(
+            spacing: 6,
+            runSpacing: 6,
+            children: missing.map((ing) => Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppColors.accent.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.accent.withOpacity(0.3)),
+              ),
+              child: Text(
+                _coreName(ing),
+                style: GoogleFonts.inter(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: AppColors.accent,
+                ),
+              ),
+            )).toList(),
+          ),
+          const SizedBox(height: 14),
+          // App buttons
+          Row(
+            children: apps.map((app) => Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: GestureDetector(
+                  onTap: () => _openApp(app.url, missing),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                      color: app.color,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(app.emoji, style: const TextStyle(fontSize: 20)),
+                        const SizedBox(height: 4),
+                        Text(
+                          app.name,
+                          style: GoogleFonts.inter(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w700,
+                            color: app.textColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            )).toList(),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Opens the app/browser — select your items and checkout',
+            style: GoogleFonts.inter(fontSize: 11, color: AppColors.textSecondary),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
