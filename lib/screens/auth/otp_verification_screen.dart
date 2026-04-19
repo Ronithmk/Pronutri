@@ -6,6 +6,7 @@ import '../../services/auth_provider.dart';
 import '../../services/notification_service.dart'; // ✅ FIX: was missing
 import '../../services/nutrition_provider.dart';
 import '../../services/habit_provider.dart';
+import '../../services/meal_plan_provider.dart';
 import '../../services/otp_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/app_button.dart';
@@ -96,6 +97,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         NotificationService.saveTokenToBackend(null);
         context.read<NutritionProvider>().setUser(authProvider.currentUser);
         context.read<HabitProvider>().setUser(authProvider.currentUser?.id ?? '');
+        context.read<MealPlanProvider>().setUser(authProvider.currentUser?.id ?? '');
         Navigator.pushAndRemoveUntil(
           context,
           MaterialPageRoute(builder: (_) => const MainNavScreen()),

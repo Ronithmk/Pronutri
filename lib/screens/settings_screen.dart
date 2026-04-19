@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/nutrition_provider.dart';
 import '../services/habit_provider.dart';
+import '../services/meal_plan_provider.dart';
 import '../utils/unit_helper.dart';
 import '../services/theme_provider.dart';
 import '../theme/app_theme.dart';
@@ -61,6 +62,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
     nutrition.setUser(auth.currentUser);
     context.read<HabitProvider>().setUser(auth.currentUser?.id ?? '');
+    context.read<MealPlanProvider>().setUser(auth.currentUser?.id ?? '');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text('Profile saved!'),
       backgroundColor: AppColors.primary,

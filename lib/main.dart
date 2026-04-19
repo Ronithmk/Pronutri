@@ -11,6 +11,7 @@ import 'services/theme_provider.dart';
 import 'services/auth_provider.dart';
 import 'services/activity_provider.dart';
 import 'services/habit_provider.dart';
+import 'services/meal_plan_provider.dart';
 import 'services/notification_service.dart';
 import 'services/live_session_provider.dart';
 import 'theme/app_theme.dart';
@@ -31,6 +32,7 @@ void main() async {
   await Hive.openBox('settings');
   await Hive.openBox('custom_foods');
   await Hive.openBox('habits_data');
+  await Hive.openBox('meal_plans');
 
   final authProvider = AuthProvider();
   await authProvider.init();
@@ -56,6 +58,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => ActivityProvider()),
         ChangeNotifierProvider(create: (_) => HabitProvider()),
+        ChangeNotifierProvider(create: (_) => MealPlanProvider()),
         ChangeNotifierProvider(create: (_) => LiveSessionProvider()),
       ],
       child: const ProNutriApp(),

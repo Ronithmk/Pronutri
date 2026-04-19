@@ -1,7 +1,7 @@
 name: nutritrack
 description: ProNutri - Your Personal Nutrition & Fitness Companion
 publish_to: 'none'
-version: 2.0.6+8
+version: 2.1.0+9
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -40,6 +40,9 @@ dependencies:
   url_launcher: ^6.3.0
   google_mlkit_image_labeling: ^0.12.0
   timezone: ^0.9.4
+  pdf: ^3.10.4
+  printing: ^5.12.0
+  share_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:

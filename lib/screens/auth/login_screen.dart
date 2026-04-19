@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../services/auth_provider.dart';
 import '../../services/nutrition_provider.dart';
 import '../../services/habit_provider.dart';
+import '../../services/meal_plan_provider.dart';
 import '../../theme/app_theme.dart';
 import '../main_nav_screen.dart';
 import '../trainer_dashboard_screen.dart';
@@ -65,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen>
     if (error != null) { _showError(error); return; }
     context.read<NutritionProvider>().setUser(auth.currentUser);
     context.read<HabitProvider>().setUser(auth.currentUser?.id ?? '');
+    context.read<MealPlanProvider>().setUser(auth.currentUser?.id ?? '');
     _goHome();
   }
 

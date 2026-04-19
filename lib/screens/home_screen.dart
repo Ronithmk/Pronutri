@@ -15,6 +15,10 @@ import 'progress_screen.dart';
 import 'exercise_screen.dart';
 import 'paywall_screen.dart';
 import 'habits_screen.dart';
+import 'meal_plan_screen.dart';
+import 'challenges_screen.dart';
+import 'video_library_screen.dart';
+import 'health_report_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -42,6 +46,8 @@ class HomeScreen extends StatelessWidget {
             _streakCard(context, p, isDark),
             const SizedBox(height: 16),
             _habitsCard(context, isDark),
+            const SizedBox(height: 16),
+            _featuresSection(context, isDark),
             const SizedBox(height: 16),
             _weeklyChart(context, p, isDark),
             const SizedBox(height: 16),
@@ -895,6 +901,73 @@ class HomeScreen extends StatelessWidget {
         ]),
       ),
     );
+  }
+
+  // ── Features Grid ─────────────────────────────────────────────────────────
+  Widget _featuresSection(BuildContext context, bool isDark) {
+    final features = [
+      (
+        '🗓', 'Meal Planner', 'Weekly plan + grocery list',
+        AppColors.brandGreen,
+        () => Navigator.push(context, MaterialPageRoute(builder: (_) => const MealPlanScreen())),
+      ),
+      (
+        '🏆', 'Challenges', 'Track your fitness goals',
+        AppColors.amber,
+        () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ChallengesScreen())),
+      ),
+      (
+        '▶️', 'Video Library', 'Workout videos on demand',
+        AppColors.brandBlue,
+        () => Navigator.push(context, MaterialPageRoute(builder: (_) => const VideoLibraryScreen())),
+      ),
+      (
+        '📄', 'Health Report', 'Export your progress as PDF',
+        AppColors.purple,
+        () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HealthReportScreen())),
+      ),
+    ];
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Text('Quick Access',
+          style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w700,
+              color: isDark ? AppColors.textPriDark : AppColors.textPri)),
+      const SizedBox(height: 10),
+      GridView.count(
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 2.0,
+        children: features.map((f) {
+          final (emoji, title, subtitle, color, onTap) = f;
+          return GestureDetector(
+            onTap: onTap,
+            child: Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: isDark ? AppColors.surfDark : AppColors.surface,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: isDark ? AppColors.borderDark : AppColors.border),
+              ),
+              child: Row(children: [
+                Text(emoji, style: const TextStyle(fontSize: 26)),
+                const SizedBox(width: 10),
+                Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center, children: [
+                  Text(title, style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700,
+                      color: isDark ? AppColors.textPriDark : AppColors.textPri)),
+                  Text(subtitle, maxLines: 1, overflow: TextOverflow.ellipsis,
+                      style: GoogleFonts.inter(fontSize: 10,
+                          color: isDark ? AppColors.textSecDark : AppColors.textSec)),
+                ])),
+              ]),
+            ),
+          );
+        }).toList(),
+      ),
+    ]);
   }
 
   Widget _wTag(IconData icon, String label) => Row(mainAxisSize: MainAxisSize.min, children: [

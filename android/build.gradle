@@ -18,6 +18,12 @@ allprojects {
 rootProject.buildDir = "../build"
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
+    // Override compileSdk for plugin modules before they evaluate (fixes lStar error)
+    project.plugins.whenPluginAdded { plugin ->
+        if (plugin.class.name == 'com.android.build.gradle.LibraryPlugin') {
+            project.android.compileSdkVersion 35
+        }
+    }
     project.evaluationDependsOn(":app")
 }
 

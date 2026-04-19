@@ -8,7 +8,7 @@ import 'meal_logger_screen.dart';
 import 'activity_screen.dart';
 import 'exercise_screen.dart';
 import 'recipes_screen.dart';
-import 'nutribot_screen.dart';
+import 'ai_coach_screen.dart';
 import 'live/sessions_list_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
@@ -28,7 +28,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
     ExerciseScreen(),
     RecipesScreen(),
     SessionsListScreen(),
-    NutriBotScreen(),
+    AiCoachScreen(),
   ];
 
   @override
@@ -71,11 +71,11 @@ class _MainNavScreenState extends State<MainNavScreen> {
               child: Row(children: [
                 _navItem(0, Icons.home_outlined,            Icons.home_rounded,          'Home'),
                 _navItem(1, Icons.add_circle_outline,       Icons.add_circle,            'Log'),
-                _navItem(2, Icons.directions_walk_outlined, Icons.directions_walk,       'Activity'),
-                _navItem(3, Icons.fitness_center_outlined,  Icons.fitness_center,        'Exercise'),
+                _navItem(2, Icons.directions_walk_outlined, Icons.directions_walk,       'Steps'),
+                _navItem(3, Icons.fitness_center_outlined,  Icons.fitness_center,        'Workout'),
                 _navItem(4, Icons.restaurant_menu_outlined, Icons.restaurant_menu,       'Recipes'),
                 _navItem(5, Icons.live_tv_outlined,         Icons.live_tv,               'Live'),
-                _navItem(6, Icons.smart_toy_outlined,       Icons.smart_toy,             'AI Coach'),
+                _navItem(6, Icons.sports_gymnastics_outlined, Icons.sports_gymnastics,     'Coach'),
               ]),
             ),
           ),
@@ -105,52 +105,59 @@ class _MainNavScreenState extends State<MainNavScreen> {
               : null,
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          idx == 1
-            ? Container(
-                width: 38, height: 38,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.brandBlue, AppColors.brandGreen],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(color: AppColors.brandBlue.withOpacity(0.40), blurRadius: 12, offset: const Offset(0, 5)),
-                  ],
-                ),
-                child: Icon(active ? activeIcon : icon, color: Colors.white, size: 20),
-              )
-            : idx == 5
-              ? _LiveNavIcon(icon: icon, activeIcon: activeIcon, active: active, isDark: isDark)
-              : AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  padding: EdgeInsets.all(active ? 6 : 4),
-                  decoration: active
-                    ? BoxDecoration(
-                        color: AppColors.brandBlue.withOpacity(0.14),
-                        borderRadius: BorderRadius.circular(10),
-                      )
-                    : null,
-                  child: Icon(
-                    active ? activeIcon : icon,
-                    size: 20,
-                    color: active
-                        ? AppColors.brandBlue
-                        : isDark ? AppColors.textSecDark : AppColors.textHint,
-                  ),
-                ),
+          // Fixed-height icon zone so all items stay at the same vertical position
+          SizedBox(
+            height: 34,
+            child: Center(
+              child: idx == 1
+                ? Container(
+                    width: 34, height: 34,
+                    decoration: BoxDecoration(
+                      gradient: const LinearGradient(
+                        colors: [AppColors.brandBlue, AppColors.brandGreen],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(color: AppColors.brandBlue.withOpacity(0.40),
+                            blurRadius: 10, offset: const Offset(0, 4)),
+                      ],
+                    ),
+                    child: Icon(active ? activeIcon : icon, color: Colors.white, size: 18),
+                  )
+                : idx == 5
+                  ? _LiveNavIcon(icon: icon, activeIcon: activeIcon, active: active, isDark: isDark)
+                  : AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: EdgeInsets.all(active ? 5 : 4),
+                      decoration: active
+                        ? BoxDecoration(
+                            color: AppColors.brandBlue.withOpacity(0.14),
+                            borderRadius: BorderRadius.circular(9),
+                          )
+                        : null,
+                      child: Icon(
+                        active ? activeIcon : icon,
+                        size: 19,
+                        color: active
+                            ? AppColors.brandBlue
+                            : isDark ? AppColors.textSecDark : AppColors.textHint,
+                      ),
+                    ),
+            ),
+          ),
           const SizedBox(height: 2),
           AnimatedDefaultTextStyle(
             duration: const Duration(milliseconds: 200),
             style: GoogleFonts.inter(
-              fontSize: 9,
+              fontSize: 9.5,
               fontWeight: active ? FontWeight.w700 : FontWeight.w400,
               color: active
                   ? AppColors.brandBlue
                   : isDark ? AppColors.textSecDark : AppColors.textHint,
             ),
-            child: Text(label),
+            child: Text(label, overflow: TextOverflow.ellipsis, maxLines: 1),
           ),
         ]),
       ),

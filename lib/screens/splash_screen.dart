@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/nutrition_provider.dart';
 import '../services/habit_provider.dart';
+import '../services/meal_plan_provider.dart';
 import '../theme/app_theme.dart';
 import 'main_nav_screen.dart';
 import 'trainer_dashboard_screen.dart';
@@ -90,6 +91,7 @@ class _SplashScreenState extends State<SplashScreen>
     if (auth.isLoggedIn) {
       context.read<NutritionProvider>().setUser(auth.currentUser);
       context.read<HabitProvider>().setUser(auth.currentUser?.id ?? '');
+      context.read<MealPlanProvider>().setUser(auth.currentUser?.id ?? '');
 
       // Trainer pending → show review screen, not home
       if (auth.currentUser?.isTrainerPending == true) {
