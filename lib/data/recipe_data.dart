@@ -7,7 +7,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── NORTH INDIAN (20) ──────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Dal Makhani',
     emoji: '🫘',
     description: 'Slow-cooked black lentils simmered in a rich buttery tomato gravy.',
@@ -32,7 +32,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['lentil', 'urad dal', 'kidney beans', 'tomato', 'butter', 'cream', 'cumin', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Butter Chicken',
     emoji: '🍗',
     description: 'Tender chicken in a velvety tomato-cream sauce — India\'s most beloved curry.',
@@ -57,7 +57,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'tomato', 'butter', 'cream', 'yogurt', 'cashew', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Palak Paneer',
     emoji: '🟢',
     description: 'Fresh cottage cheese cubes in a smooth, spiced spinach gravy.',
@@ -81,7 +81,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['paneer', 'spinach', 'onion', 'tomato', 'cream', 'garlic', 'ginger', 'cumin'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Paneer Tikka Masala',
     emoji: '🧀',
     description: 'Smoky grilled paneer in a rich, tangy masala sauce.',
@@ -105,7 +105,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['paneer', 'capsicum', 'onion', 'tomato', 'yogurt', 'cream', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chole (Chickpea Curry)',
     emoji: '🫛',
     description: 'Bold, tangy chickpea curry slow-cooked with whole spices.',
@@ -129,7 +129,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chickpea', 'onion', 'tomato', 'garlic', 'ginger', 'cumin'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Rajma Chawal',
     emoji: '🍚',
     description: 'Hearty red kidney bean curry served over steamed basmati rice.',
@@ -153,7 +153,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['kidney beans', 'rajma', 'onion', 'tomato', 'rice', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Aloo Gobi',
     emoji: '🥔',
     description: 'Dry-spiced cauliflower and potato stir-fry — a simple everyday classic.',
@@ -177,7 +177,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['potato', 'cauliflower', 'onion', 'turmeric', 'cumin'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Sarson da Saag',
     emoji: '🌿',
     description: 'Punjabi mustard-leaf saag slow-cooked and served with makki roti and butter.',
@@ -201,7 +201,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['mustard leaves', 'spinach', 'onion', 'tomato', 'butter', 'ginger', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Kadai Chicken',
     emoji: '🍲',
     description: 'Spicy chicken cooked with bell peppers in a rustic kadai gravy.',
@@ -224,7 +224,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'capsicum', 'tomato', 'onion', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Lucknowi Chicken Biryani',
     emoji: '🍛',
     description: 'Fragrant dum-cooked basmati rice layered with tender spiced chicken.',
@@ -248,7 +248,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'rice', 'basmati', 'yogurt', 'onion', 'saffron', 'ghee', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Aloo Paratha',
     emoji: '🫓',
     description: 'Whole-wheat flatbread stuffed with spiced mashed potato filling.',
@@ -271,7 +271,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['potato', 'flour', 'wheat', 'butter', 'cumin', 'coriander'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Malai Kofta',
     emoji: '🟡',
     description: 'Soft paneer and potato dumplings in a creamy cashew-tomato gravy.',
@@ -294,7 +294,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['paneer', 'potato', 'cashew', 'tomato', 'cream', 'onion'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Kadhi Pakora',
     emoji: '🥣',
     description: 'Crispy gram-flour fritters floating in tangy yogurt-besan curry.',
@@ -318,7 +318,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['yogurt', 'besan', 'gram flour', 'onion', 'cumin', 'mustard'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Shahi Paneer',
     emoji: '👑',
     description: 'Royal paneer curry in a fragrant cashew, cream, and saffron gravy.',
@@ -342,7 +342,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['paneer', 'cashew', 'cream', 'saffron', 'onion', 'ghee', 'cardamom'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Baingan Bharta',
     emoji: '🍆',
     description: 'Smoky roasted eggplant mashed with spices, tomatoes, and onions.',
@@ -365,7 +365,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['eggplant', 'brinjal', 'onion', 'tomato', 'cumin', 'turmeric', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Matar Paneer',
     emoji: '🟢',
     description: 'Green peas and cottage cheese in a fragrant tomato-onion gravy.',
@@ -388,7 +388,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['paneer', 'peas', 'tomato', 'onion', 'garlic', 'ginger', 'turmeric'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Jeera Rice',
     emoji: '🌾',
     description: 'Fragrant basmati rice tempered with cumin seeds and ghee.',
@@ -412,7 +412,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'basmati', 'cumin', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Dahi Chicken',
     emoji: '🍗',
     description: 'Tender chicken slow-cooked in spiced yogurt — light yet deeply flavored.',
@@ -435,7 +435,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'yogurt', 'onion', 'turmeric', 'garam masala', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Pav Bhaji',
     emoji: '🍞',
     description: 'Spiced mixed vegetable mash served with buttery toasted pav buns.',
@@ -459,7 +459,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['potato', 'cauliflower', 'peas', 'tomato', 'onion', 'capsicum', 'butter'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tandoori Chicken',
     emoji: '🔴',
     description: 'Yogurt-marinated chicken roasted to perfection with aromatic spices.',
@@ -485,7 +485,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── SOUTH INDIAN (20) ─────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Masala Dosa',
     emoji: '🥞',
     description: 'Crispy rice crepe filled with spiced potato masala — South India\'s iconic dish.',
@@ -509,7 +509,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['dosa', 'batter', 'rice', 'potato', 'onion', 'mustard', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Idli Sambar',
     emoji: '⚪',
     description: 'Steamed rice cakes served with piping hot lentil vegetable broth.',
@@ -533,7 +533,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['idli', 'rice', 'dal', 'toor dal', 'tomato', 'onion', 'carrot', 'drumstick'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chettinad Chicken Curry',
     emoji: '🌶',
     description: 'Boldly spiced Chettinad curry with freshly ground pepper and kalpasi.',
@@ -557,7 +557,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'onion', 'tomato', 'pepper', 'curry leaves', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Kerala Fish Curry',
     emoji: '🐟',
     description: 'Tangy coconut milk fish curry with raw mango and kudampuli.',
@@ -581,7 +581,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fish', 'coconut milk', 'coconut', 'tomato', 'turmeric', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Rasam',
     emoji: '🍵',
     description: 'Thin, peppery tamarind and tomato broth — the soul of South Indian meals.',
@@ -605,7 +605,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['tomato', 'tamarind', 'dal', 'toor dal', 'pepper', 'cumin', 'curry leaves', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Avial',
     emoji: '🥦',
     description: 'Kerala mixed vegetable dish with coconut, yogurt, and curry leaves.',
@@ -628,7 +628,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['drumstick', 'banana', 'carrot', 'coconut', 'yogurt', 'cumin', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Hyderabadi Biryani',
     emoji: '🍛',
     description: 'Kacchi-style biryani with marinated meat slow-cooked under sealed dough.',
@@ -652,7 +652,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'mutton', 'rice', 'basmati', 'yogurt', 'onion', 'saffron', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Pesarattu',
     emoji: '🟢',
     description: 'Crispy green moong dal crepes — a protein-rich Andhra breakfast.',
@@ -675,7 +675,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['moong dal', 'green gram', 'ginger', 'onion', 'cumin'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Ven Pongal',
     emoji: '🍚',
     description: 'Soft, peppery rice and moong dal porridge — comfort in a bowl.',
@@ -698,7 +698,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'moong dal', 'pepper', 'cumin', 'ghee', 'cashew', 'curry leaves', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Uttapam',
     emoji: '🫓',
     description: 'Thick, soft rice pancake topped with onion, tomato, and chilli.',
@@ -721,7 +721,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['dosa', 'batter', 'rice', 'onion', 'tomato'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Lemon Rice',
     emoji: '🍋',
     description: 'Tangy rice tempered with mustard, curry leaves, and fresh lemon.',
@@ -745,7 +745,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'lemon', 'mustard', 'turmeric', 'peanuts', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Coconut Fish Curry',
     emoji: '🥥',
     description: 'Goa-style fish curry with fresh coconut and spices.',
@@ -769,7 +769,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fish', 'coconut', 'tomato', 'onion', 'turmeric', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tomato Rice',
     emoji: '🍅',
     description: 'One-pot spiced tomato rice — quick, vibrant, and satisfying.',
@@ -793,7 +793,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'tomato', 'onion', 'mustard', 'turmeric', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Bisi Bele Bath',
     emoji: '🫕',
     description: 'Karnataka\'s beloved rice-dal-vegetable medley with spice powder.',
@@ -817,7 +817,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'dal', 'toor dal', 'tamarind', 'ghee', 'curry leaves', 'cashew'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Egg Curry (Andhra Style)',
     emoji: '🥚',
     description: 'Hard-boiled eggs in a fiery Andhra masala gravy.',
@@ -840,7 +840,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['egg', 'eggs', 'onion', 'tomato', 'curry leaves', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Prawn Masala',
     emoji: '🦐',
     description: 'Coastal prawn curry with coconut and spices.',
@@ -864,7 +864,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['prawn', 'shrimp', 'onion', 'tomato', 'coconut milk', 'coconut', 'turmeric', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Upma',
     emoji: '⬜',
     description: 'Savory semolina porridge with vegetables — quick South Indian breakfast.',
@@ -888,7 +888,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['semolina', 'rava', 'onion', 'carrot', 'cashew', 'mustard', 'curry leaves', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Banana Flower Curry',
     emoji: '🌸',
     description: 'Tender banana blossom cooked with mustard, coconut, and spices.',
@@ -912,7 +912,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['banana', 'coconut', 'onion', 'mustard', 'turmeric', 'curry leaves'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Vegetable Kootu',
     emoji: '🥬',
     description: 'Thick lentil and vegetable curry with coconut — a Tamil classic.',
@@ -937,7 +937,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── PAN-INDIAN HEALTHY (10) ───────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Dal Tadka',
     emoji: '🫘',
     description: 'Simple yellow dal tempered with ghee, garlic, and mustard — pure comfort.',
@@ -961,7 +961,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['dal', 'toor dal', 'lentil', 'tomato', 'turmeric', 'cumin', 'garlic', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Vegetable Pulao',
     emoji: '🌿',
     description: 'Fragrant basmati rice cooked with mixed vegetables and whole spices.',
@@ -985,7 +985,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'basmati', 'carrot', 'peas', 'onion', 'cumin', 'ghee', 'cinnamon'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Egg Bhurji',
     emoji: '🍳',
     description: 'Spiced scrambled eggs with onion, tomato, and green chilli.',
@@ -1009,7 +1009,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['egg', 'eggs', 'onion', 'tomato', 'cumin', 'turmeric'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Sprouts Salad',
     emoji: '🌱',
     description: 'High-protein mixed sprouts tossed with lemon, spices, and vegetables.',
@@ -1032,7 +1032,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['sprouts', 'tomato', 'cucumber', 'onion', 'lemon'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Moong Dal Chilla',
     emoji: '🟡',
     description: 'Thin protein-packed moong dal pancakes — quick healthy breakfast.',
@@ -1056,7 +1056,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['moong dal', 'green gram', 'ginger', 'onion', 'turmeric'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Vegetable Khichdi',
     emoji: '🍲',
     description: 'Comforting one-pot rice and dal porridge with seasonal vegetables.',
@@ -1080,7 +1080,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'moong dal', 'carrot', 'peas', 'tomato', 'cumin', 'turmeric', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Methi Thepla',
     emoji: '🟫',
     description: 'Thin Gujarati flatbread packed with fresh fenugreek leaves.',
@@ -1104,7 +1104,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fenugreek', 'methi', 'wheat', 'flour', 'yogurt', 'turmeric'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chickpea Salad',
     emoji: '🥗',
     description: 'Protein-rich chaat-style chickpea salad with tamarind and chilli.',
@@ -1128,7 +1128,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chickpea', 'onion', 'tomato', 'tamarind', 'lemon', 'coriander'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Grilled Fish with Spices',
     emoji: '🐠',
     description: 'Light Indian-spiced grilled fish — high protein and low carb.',
@@ -1151,7 +1151,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fish', 'lemon', 'turmeric', 'ginger', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Oats Upma',
     emoji: '🌾',
     description: 'Healthy oats-based savory upma with vegetables — a nutritious twist.',
@@ -1177,7 +1177,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── AMERICAN (10) ──────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Grilled Chicken & Veggies',
     emoji: '🍗',
     description: 'Juicy grilled chicken breast with seasonal vegetables.',
@@ -1193,7 +1193,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'zucchini', 'bell pepper', 'olive oil', 'garlic', 'paprika'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Mac & Cheese',
     emoji: '🧀',
     description: 'Creamy homemade macaroni and cheese — ultimate American comfort food.',
@@ -1209,7 +1209,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['macaroni', 'cheese', 'cheddar', 'butter', 'milk', 'flour'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Caesar Salad',
     emoji: '🥗',
     description: 'Crisp romaine, parmesan, croutons with classic Caesar dressing.',
@@ -1225,7 +1225,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['romaine', 'parmesan', 'croutons', 'lemon', 'salad'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Classic Beef Burger',
     emoji: '🍔',
     description: 'Juicy beef patty with lettuce, tomato, and all the fixings.',
@@ -1241,7 +1241,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'burger', 'cheddar', 'lettuce', 'tomato', 'ketchup', 'mayo'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'BBQ Pulled Pork',
     emoji: '🥩',
     description: 'Slow-cooked pork shoulder in smoky BBQ sauce.',
@@ -1257,7 +1257,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['pork', 'BBQ', 'paprika', 'garlic', 'cumin'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Grilled Salmon',
     emoji: '🐟',
     description: 'Buttery grilled salmon fillet with lemon and herbs.',
@@ -1273,7 +1273,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['salmon', 'butter', 'lemon', 'dill', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Fluffy Pancakes',
     emoji: '🥞',
     description: 'Light and fluffy buttermilk pancakes with maple syrup.',
@@ -1289,7 +1289,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['flour', 'buttermilk', 'egg', 'butter', 'maple syrup', 'pancakes'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Turkey & Avocado Wrap',
     emoji: '🌯',
     description: 'Lean turkey slices with creamy avocado in a whole-wheat wrap.',
@@ -1305,7 +1305,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['turkey', 'avocado', 'lettuce', 'tomato', 'tortilla', 'mustard'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Overnight Oats',
     emoji: '🌾',
     description: 'No-cook oats with berries and honey — perfect prep-ahead breakfast.',
@@ -1321,7 +1321,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['oats', 'milk', 'yogurt', 'honey', 'berries', 'chia'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chicken Caesar Wrap',
     emoji: '🌯',
     description: 'Grilled chicken, romaine, and parmesan in a crispy tortilla wrap.',
@@ -1339,7 +1339,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── BRITISH (8) ────────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Fish & Chips',
     emoji: '🐟',
     description: 'Beer-battered cod with thick-cut chips and mushy peas.',
@@ -1355,7 +1355,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['cod', 'potato', 'flour', 'beer', 'fish'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: "Shepherd's Pie",
     emoji: '🥧',
     description: 'Minced lamb with vegetables topped with creamy mashed potato.',
@@ -1371,7 +1371,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['lamb', 'potato', 'onion', 'carrot', 'peas', 'Worcestershire'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Full English Breakfast',
     emoji: '🍳',
     description: 'The classic fry-up: eggs, bacon, sausages, beans, and toast.',
@@ -1387,7 +1387,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['egg', 'bacon', 'sausage', 'beans', 'mushroom', 'tomato', 'toast'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Roast Chicken Sunday',
     emoji: '🍗',
     description: 'Classic Sunday roast chicken with roasted vegetables and gravy.',
@@ -1403,7 +1403,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'potato', 'carrot', 'onion', 'thyme', 'lemon', 'butter'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Jacket Potato',
     emoji: '🥔',
     description: 'Crispy-skinned baked potato with butter and cheddar filling.',
@@ -1419,7 +1419,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['potato', 'butter', 'cheddar', 'sour cream', 'chives'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Beans on Toast',
     emoji: '🍞',
     description: 'British classic: creamy baked beans on buttered toast.',
@@ -1435,7 +1435,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beans', 'toast', 'bread', 'butter'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Porridge',
     emoji: '🥣',
     description: 'Warming oat porridge with honey and banana — the British breakfast staple.',
@@ -1451,7 +1451,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['oats', 'milk', 'banana', 'honey'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Cottage Pie',
     emoji: '🥧',
     description: 'Minced beef with peas and carrots under a golden mashed potato crust.',
@@ -1469,7 +1469,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── MIDDLE EASTERN (10) ─────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chicken Shawarma',
     emoji: '🌯',
     description: 'Spiced chicken thighs wrapped in flatbread with garlic sauce and pickles.',
@@ -1485,7 +1485,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'cumin', 'coriander', 'turmeric', 'paprika', 'flatbread', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Hummus & Pita',
     emoji: '🧆',
     description: 'Creamy chickpea hummus with olive oil and warm pita bread.',
@@ -1501,7 +1501,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chickpeas', 'tahini', 'lemon', 'garlic', 'olive oil', 'pita'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Falafel Wrap',
     emoji: '🧆',
     description: 'Crispy chickpea falafel with tahini, tomato, and parsley in a wrap.',
@@ -1517,7 +1517,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chickpeas', 'onion', 'garlic', 'cumin', 'coriander', 'parsley', 'tahini'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Shakshuka',
     emoji: '🍳',
     description: 'Eggs poached in a spiced tomato and pepper sauce.',
@@ -1533,7 +1533,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['egg', 'tomato', 'bell pepper', 'onion', 'garlic', 'cumin', 'paprika'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Grilled Kofta',
     emoji: '🍢',
     description: 'Spiced minced lamb skewers grilled to perfection.',
@@ -1549,7 +1549,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['lamb', 'onion', 'garlic', 'cumin', 'coriander', 'cinnamon', 'parsley'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tabbouleh',
     emoji: '🥗',
     description: 'Fresh parsley and bulgur wheat salad with tomato and lemon.',
@@ -1565,7 +1565,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['parsley', 'bulgur', 'tomato', 'mint', 'lemon', 'olive oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Mujaddara',
     emoji: '🫘',
     description: 'Comforting Lebanese lentils and rice with crispy caramelised onions.',
@@ -1581,7 +1581,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['lentils', 'rice', 'onion', 'cumin', 'coriander', 'olive oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Fattoush Salad',
     emoji: '🥗',
     description: 'Crunchy Lebanese bread salad with fresh herbs and sumac dressing.',
@@ -1597,7 +1597,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['pita', 'tomato', 'cucumber', 'parsley', 'lemon', 'sumac'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Lamb Biryani',
     emoji: '🍛',
     description: 'Fragrant slow-cooked lamb and basmati rice with whole spices.',
@@ -1613,7 +1613,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['lamb', 'rice', 'yogurt', 'saffron', 'garam masala', 'cumin', 'onion', 'ghee'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Manakish Za\'atar',
     emoji: '🫓',
     description: 'Lebanese flatbread topped with za\'atar and olive oil — a breakfast favourite.',
@@ -1631,7 +1631,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── EAST ASIAN (10) ─────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chicken Fried Rice',
     emoji: '🍳',
     description: 'Wok-tossed fried rice with chicken, eggs, and vegetables.',
@@ -1647,7 +1647,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'chicken', 'egg', 'soy sauce', 'sesame', 'garlic', 'spring onion'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Miso Soup',
     emoji: '🍜',
     description: 'Warming Japanese miso broth with tofu, seaweed, and spring onion.',
@@ -1663,7 +1663,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['miso', 'tofu', 'seaweed', 'spring onion', 'dashi'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tonkotsu Ramen',
     emoji: '🍜',
     description: 'Rich pork bone broth ramen with chashu, egg, and noodles.',
@@ -1679,7 +1679,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['ramen', 'pork', 'soy sauce', 'egg', 'nori', 'spring onion', 'noodles'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Bibimbap',
     emoji: '🍚',
     description: 'Korean mixed rice bowl with sautéed vegetables, beef, and gochujang.',
@@ -1695,7 +1695,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'beef', 'zucchini', 'carrot', 'spinach', 'egg', 'gochujang', 'sesame'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Sushi Rolls (Maki)',
     emoji: '🍣',
     description: 'Classic Japanese maki rolls with salmon, cucumber, and seasoned rice.',
@@ -1711,7 +1711,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['salmon', 'cucumber', 'rice', 'nori', 'vinegar', 'wasabi', 'soy sauce'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Pad Thai',
     emoji: '🍜',
     description: 'Classic Thai stir-fried rice noodles with prawns, egg, and peanuts.',
@@ -1727,7 +1727,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['noodles', 'prawn', 'egg', 'fish sauce', 'tamarind', 'peanuts', 'lime', 'bean sprouts'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Beef Bulgogi',
     emoji: '🥩',
     description: 'Korean marinated grilled beef — sweet, savoury, and smoky.',
@@ -1743,7 +1743,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'soy sauce', 'sesame', 'garlic', 'ginger', 'pear', 'spring onion'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Green Curry',
     emoji: '🍛',
     description: 'Thai green curry with chicken and vegetables in coconut milk.',
@@ -1759,7 +1759,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'coconut milk', 'green curry', 'zucchini', 'fish sauce', 'basil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tom Yum Soup',
     emoji: '🍲',
     description: 'Hot and sour Thai soup with prawns, mushrooms, and lemongrass.',
@@ -1775,7 +1775,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['prawn', 'lemongrass', 'mushroom', 'lime', 'fish sauce', 'galangal'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Nasi Goreng',
     emoji: '🍳',
     description: 'Indonesian fried rice with sweet soy sauce, shrimp paste, and a fried egg.',
@@ -1793,7 +1793,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── MEDITERRANEAN (8) ──────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Pasta Carbonara',
     emoji: '🍝',
     description: 'Silky spaghetti with pancetta, egg, and parmesan — no cream needed.',
@@ -1809,7 +1809,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['spaghetti', 'pancetta', 'egg', 'parmesan', 'pecorino', 'pepper'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Margherita Pizza',
     emoji: '🍕',
     description: 'Classic Neapolitan pizza with tomato, mozzarella, and fresh basil.',
@@ -1825,7 +1825,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['pizza', 'mozzarella', 'tomato', 'basil', 'olive oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Greek Salad',
     emoji: '🥗',
     description: 'Fresh tomato, cucumber, olives, and feta in olive oil and oregano.',
@@ -1841,7 +1841,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['tomato', 'cucumber', 'feta', 'olives', 'olive oil', 'oregano', 'onion'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Risotto',
     emoji: '🍚',
     description: 'Creamy arborio rice with parmesan and white wine.',
@@ -1857,7 +1857,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'parmesan', 'onion', 'garlic', 'white wine', 'butter'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Paella',
     emoji: '🥘',
     description: 'Spanish saffron rice with chicken, prawns, and peppers.',
@@ -1873,7 +1873,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'chicken', 'prawn', 'saffron', 'paprika', 'onion', 'garlic', 'pepper'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Moussaka',
     emoji: '🥘',
     description: 'Greek baked aubergine and minced lamb with béchamel sauce.',
@@ -1889,7 +1889,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['aubergine', 'lamb', 'onion', 'garlic', 'cinnamon', 'tomato', 'parmesan'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Bruschetta',
     emoji: '🍞',
     description: 'Toasted sourdough with tomato, garlic, basil, and olive oil.',
@@ -1905,7 +1905,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['sourdough', 'tomato', 'garlic', 'basil', 'olive oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Tagliatelle Bolognese',
     emoji: '🍝',
     description: 'Slow-cooked Italian meat ragu with tagliatelle pasta.',
@@ -1923,7 +1923,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── MEXICAN / LATIN AMERICAN (6) ───────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chicken Tacos',
     emoji: '🌮',
     description: 'Spiced chicken in corn tortillas with salsa, avocado, and lime.',
@@ -1939,7 +1939,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'tortilla', 'avocado', 'tomato', 'cumin', 'chilli', 'lime', 'coriander'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Beef Burrito',
     emoji: '🌯',
     description: 'Seasoned beef, rice, beans, and cheese wrapped in a large flour tortilla.',
@@ -1955,7 +1955,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'tortilla', 'rice', 'black beans', 'cheddar', 'cumin', 'chilli'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Ceviche',
     emoji: '🐟',
     description: 'Fresh white fish "cooked" in citrus juice with onion, chilli, and coriander.',
@@ -1971,7 +1971,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fish', 'lime', 'lemon', 'onion', 'chilli', 'coriander', 'avocado'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Empanadas',
     emoji: '🥟',
     description: 'Crispy pastry pockets filled with spiced minced beef and olives.',
@@ -1987,7 +1987,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'onion', 'garlic', 'olives', 'cumin', 'paprika', 'egg'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Arroz con Pollo',
     emoji: '🍛',
     description: 'Latin American chicken and rice with tomatoes, peppers, and saffron.',
@@ -2003,7 +2003,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'rice', 'tomato', 'pepper', 'onion', 'garlic', 'cumin', 'saffron'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Guacamole & Chips',
     emoji: '🥑',
     description: 'Creamy avocado dip with lime, onion, chilli, and coriander.',
@@ -2021,7 +2021,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── AFRICAN (6) ─────────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Jollof Rice',
     emoji: '🍛',
     description: 'West African one-pot rice cooked in a rich tomato and pepper sauce.',
@@ -2037,7 +2037,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'tomato', 'bell pepper', 'onion', 'chilli', 'tomato paste', 'thyme'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Suya (Spiced Grilled Beef)',
     emoji: '🍢',
     description: 'Nigerian street food: beef skewers in a peanut and spice rub.',
@@ -2053,7 +2053,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'peanuts', 'paprika', 'ginger', 'garlic', 'chilli'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Doro Wat',
     emoji: '🍗',
     description: 'Ethiopian spiced chicken stew with hard-boiled eggs and berbere.',
@@ -2069,7 +2069,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'onion', 'berbere', 'egg', 'garlic', 'ginger'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Peri-Peri Chicken',
     emoji: '🌶️',
     description: 'South African fire-grilled chicken marinated in hot peri-peri sauce.',
@@ -2085,7 +2085,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['chicken', 'chilli', 'garlic', 'lemon', 'paprika', 'oregano'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Bobotie',
     emoji: '🥘',
     description: 'South African minced meat bake with dried fruit and custard topping.',
@@ -2101,7 +2101,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'onion', 'garlic', 'curry', 'raisins', 'egg', 'milk'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Egusi Soup',
     emoji: '🍲',
     description: 'Nigerian melon seed soup with leafy vegetables and assorted meat.',
@@ -2119,7 +2119,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── SOUTH ASIAN / PAKISTANI-BANGLADESHI (6) ─────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Nihari',
     emoji: '🍖',
     description: 'Pakistani slow-cooked braised beef shank in a deeply spiced broth.',
@@ -2135,7 +2135,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'onion', 'nihari masala', 'ghee', 'ginger', 'garlic', 'coriander'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Haleem',
     emoji: '🥘',
     description: 'South Asian porridge of slow-cooked meat and lentils with warming spices.',
@@ -2151,7 +2151,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['mutton', 'lentils', 'wheat', 'onion', 'ginger', 'garlic', 'ghee', 'mint'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Hilsa Fish Curry',
     emoji: '🐟',
     description: 'Bengali mustard-based fish curry with the king of fish — ilish.',
@@ -2167,7 +2167,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['fish', 'mustard', 'turmeric', 'chilli', 'nigella', 'mustard oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Chapli Kebab',
     emoji: '🥩',
     description: 'Pakistani flat minced beef kebabs with pomegranate seeds and spices.',
@@ -2183,7 +2183,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'onion', 'chilli', 'tomato', 'coriander', 'cumin', 'pomegranate'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Panta Bhat (Fermented Rice)',
     emoji: '🍚',
     description: 'Bengali overnight fermented rice served with dried fish and onion.',
@@ -2199,7 +2199,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['rice', 'fish', 'onion', 'chilli', 'mustard oil'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Seekh Kebab',
     emoji: '🍢',
     description: 'Pakistani spiced minced lamb kebabs grilled on skewers.',
@@ -2217,7 +2217,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── EUROPEAN (6) ────────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Beef Stroganoff',
     emoji: '🍝',
     description: 'Russian creamy beef and mushroom sauce served over pasta or rice.',
@@ -2233,7 +2233,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beef', 'mushroom', 'onion', 'garlic', 'sour cream', 'butter', 'mustard'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Pierogi',
     emoji: '🥟',
     description: 'Polish dumplings stuffed with potato, cheese, and onion.',
@@ -2249,7 +2249,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['potato', 'cheese', 'onion', 'flour', 'egg', 'butter', 'sour cream'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Wiener Schnitzel',
     emoji: '🍖',
     description: 'Austrian thin veal cutlet breaded and fried golden.',
@@ -2265,7 +2265,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['veal', 'pork', 'egg', 'breadcrumbs', 'lemon', 'flour'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Borscht',
     emoji: '🍲',
     description: 'Russian/Ukrainian deep crimson beetroot soup with smetana.',
@@ -2281,7 +2281,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['beetroot', 'potato', 'cabbage', 'onion', 'carrot', 'tomato paste', 'dill'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Bratwurst & Sauerkraut',
     emoji: '🌭',
     description: 'German grilled pork sausage with tangy sauerkraut and mustard.',
@@ -2297,7 +2297,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['sausage', 'sauerkraut', 'onion', 'beer', 'caraway'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'French Onion Soup',
     emoji: '🧅',
     description: 'Slow-caramelised onion soup with crusty crouton and melted Gruyère.',
@@ -2315,7 +2315,7 @@ final List<AiRecipe> kAllRecipes = [
 
   // ── GLOBAL HEALTHY ────────────────────────────────────────────────────────
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Quinoa Power Bowl',
     emoji: '🥗',
     description: 'Protein-rich quinoa with roasted vegetables, chickpeas, and tahini.',
@@ -2331,7 +2331,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['quinoa', 'chickpeas', 'zucchini', 'bell pepper', 'tahini', 'lemon'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Baked Salmon & Greens',
     emoji: '🐟',
     description: 'Herb-crusted baked salmon with steamed broccoli and lemon.',
@@ -2347,7 +2347,7 @@ final List<AiRecipe> kAllRecipes = [
     keywords: ['salmon', 'broccoli', 'lemon', 'olive oil', 'dill', 'garlic'],
   ),
 
-  AiRecipe(
+  const AiRecipe(
     name: 'Smoothie Bowl',
     emoji: '🫐',
     description: 'Thick blended berry and banana smoothie topped with granola and seeds.',

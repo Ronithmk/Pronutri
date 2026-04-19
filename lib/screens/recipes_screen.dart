@@ -80,7 +80,7 @@ class _RecipesScreenState extends State<RecipesScreen>
   final _searchFocus = FocusNode();
   final List<String> _ingredients = [];
   List<AiRecipe>? _recipes;
-  bool _loading = false;
+  final bool _loading = false;
   String? _error;
   late AnimationController _shimmerCtrl;
 
@@ -1067,7 +1067,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Could not open app'),
+            content: const Text('Could not open app'),
             backgroundColor: AppColors.accent,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -1247,7 +1247,7 @@ class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
                     const SizedBox(height: 8),
                     Row(
                       children: [
-                        Icon(Icons.check_circle, size: 14, color: AppColors.brandGreen),
+                        const Icon(Icons.check_circle, size: 14, color: AppColors.brandGreen),
                         const SizedBox(width: 4),
                         Text(
                           '${_haveIndices.length} of ${recipe.ingredients.length} ingredients available',

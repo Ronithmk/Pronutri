@@ -361,28 +361,33 @@ class HomeScreen extends StatelessWidget {
             Text('$totalL / ${goalL}L today', style: GoogleFonts.inter(fontSize: 11, color: AppColors.brandBlue, fontWeight: FontWeight.w600)),
           ])),
           Row(mainAxisSize: MainAxisSize.min, children: [
-            // Undo last glass
-            GestureDetector(
-              onTap: () async {
-                final removed = await Provider.of<NutritionProvider>(context, listen: false).undoLastWater();
-                if (removed && context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text('Last glass removed'),
-                    backgroundColor: AppColors.brandBlue,
-                    behavior: SnackBarBehavior.floating,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    duration: const Duration(seconds: 2),
-                  ));
-                }
-              },
-              child: Container(
-                width: 36, height: 36,
-                margin: const EdgeInsets.only(right: 8),
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.brandBlue.withOpacity(0.35)),
-                  borderRadius: BorderRadius.circular(18),
+            // Undo last glass — 48px tap target
+            Semantics(
+              label: 'Undo last water glass',
+              button: true,
+              child: InkWell(
+                onTap: () async {
+                  final removed = await Provider.of<NutritionProvider>(context, listen: false).undoLastWater();
+                  if (removed && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text('Last glass removed'),
+                      backgroundColor: AppColors.brandBlue,
+                      behavior: SnackBarBehavior.floating,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      duration: const Duration(seconds: 2),
+                    ));
+                  }
+                },
+                borderRadius: BorderRadius.circular(18),
+                child: Container(
+                  width: 48, height: 48,
+                  margin: const EdgeInsets.only(right: 6),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: AppColors.brandBlue.withOpacity(0.35)),
+                    borderRadius: BorderRadius.circular(18),
+                  ),
+                  child: const Icon(Icons.undo_rounded, color: AppColors.brandBlue, size: 18),
                 ),
-                child: const Icon(Icons.undo_rounded, color: AppColors.brandBlue, size: 16),
               ),
             ),
             // Add 250ml
@@ -406,57 +411,52 @@ class HomeScreen extends StatelessWidget {
         ]),
         const SizedBox(height: 18),
         // Progress bar
-        Container(
-          height: 10,
-          decoration: BoxDecoration(
-            color: AppColors.brandBlue.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: FractionallySizedBox(
-            alignment: Alignment.centerLeft,
-            widthFactor: 1,
-            child: LayoutBuilder(builder: (_, c) => Container(
-              width: c.maxWidth * p.waterProgress.clamp(0.0, 1.0),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [AppColors.brandBlue, Color(0xFF56CCF2)]),
-                borderRadius: BorderRadius.circular(8),
-                boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.4), blurRadius: 6, offset: const Offset(0, 2))],
-              ),
-            )),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: LinearProgressIndicator(
+            value: p.waterProgress.clamp(0.0, 1.0),
+            minHeight: 10,
+            backgroundColor: AppColors.brandBlue.withOpacity(0.1),
+            valueColor: const AlwaysStoppedAnimation(AppColors.brandBlue),
           ),
         ),
         const SizedBox(height: 16),
-        // Glass indicators
+        // Glass indicators — tapping an empty glass adds 250ml, tapping filled does nothing
         Row(children: [
           ...List.generate(8, (i) {
             final filled = i < glasses;
-            return Expanded(child: GestureDetector(
-              onTap: () => Provider.of<NutritionProvider>(context, listen: false).addWater(250),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 3),
-                height: 42,
-                decoration: BoxDecoration(
-                  gradient: filled
-                    ? const LinearGradient(colors: [AppColors.brandBlue, Color(0xFF56CCF2)], begin: Alignment.topLeft, end: Alignment.bottomRight)
-                    : null,
-                  color: filled ? null : (isDark ? AppColors.surfVarDark : AppColors.blueBg.withOpacity(0.6)),
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: filled
-                    ? [BoxShadow(color: AppColors.brandBlue.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))]
-                    : [BoxShadow(color: AppColors.brandBlue.withOpacity(0.08), blurRadius: 4, offset: const Offset(0, 2))],
+            return Expanded(child: Semantics(
+              label: filled ? 'Glass ${i + 1} filled' : 'Tap to add glass ${i + 1}',
+              button: !filled,
+              child: InkWell(
+                onTap: filled ? null : () => Provider.of<NutritionProvider>(context, listen: false).addWater(250),
+                borderRadius: BorderRadius.circular(12),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  margin: const EdgeInsets.symmetric(horizontal: 3),
+                  height: 44,
+                  decoration: BoxDecoration(
+                    gradient: filled
+                      ? const LinearGradient(colors: [AppColors.brandBlue, Color(0xFF56CCF2)], begin: Alignment.topLeft, end: Alignment.bottomRight)
+                      : null,
+                    color: filled ? null : (isDark ? AppColors.surfVarDark : AppColors.blueBg.withOpacity(0.6)),
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: filled
+                      ? [BoxShadow(color: AppColors.brandBlue.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4))]
+                      : [BoxShadow(color: AppColors.brandBlue.withOpacity(0.08), blurRadius: 4, offset: const Offset(0, 2))],
+                  ),
+                  child: Center(child: Icon(
+                    filled ? Icons.water_drop : Icons.water_drop_outlined,
+                    size: 18,
+                    color: filled ? Colors.white : AppColors.brandBlue.withOpacity(0.4),
+                  )),
                 ),
-                child: Center(child: Icon(
-                  filled ? Icons.water_drop : Icons.water_drop_outlined,
-                  size: 18,
-                  color: filled ? Colors.white : AppColors.brandBlue.withOpacity(0.4),
-                )),
               ),
             ));
           }),
         ]),
         const SizedBox(height: 10),
-        Text('Tap a glass or + 250ml button to log', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textSec)),
+        Text('Tap an empty glass or + 250ml to log water', style: GoogleFonts.inter(fontSize: 10, color: AppColors.textSec)),
       ]),
     );
   }

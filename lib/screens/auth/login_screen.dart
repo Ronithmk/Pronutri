@@ -228,15 +228,15 @@ class _LoginScreenState extends State<LoginScreen>
                     const SizedBox(height: 28),
 
                     // ── Feature pills ────────────────────────────────
-                    SingleChildScrollView(
+                    const SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(children: [
                         _FeaturePill(icon: '🤖', label: 'AI Meal Plans'),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         _FeaturePill(icon: '📊', label: 'Smart Tracking'),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         _FeaturePill(icon: '🍛', label: '50+ Recipes'),
-                        const SizedBox(width: 8),
+                        SizedBox(width: 8),
                         _FeaturePill(icon: '🔥', label: 'Calorie Goals'),
                       ]),
                     ),

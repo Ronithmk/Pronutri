@@ -5,10 +5,8 @@ import '../theme/app_theme.dart';
 import '../services/live_session_provider.dart';
 import 'home_screen.dart';
 import 'meal_logger_screen.dart';
-import 'activity_screen.dart';
-import 'exercise_screen.dart';
-import 'recipes_screen.dart';
-import 'ai_coach_screen.dart';
+import 'fitness_nav_screen.dart';
+import 'explore_nav_screen.dart';
 import 'live/sessions_list_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
@@ -21,14 +19,12 @@ class MainNavScreen extends StatefulWidget {
 class _MainNavScreenState extends State<MainNavScreen> {
   late int _idx;
 
-  final _screens = const [
+  static const _screens = [
     HomeScreen(),
     MealLoggerScreen(),
-    ActivityScreen(),
-    ExerciseScreen(),
-    RecipesScreen(),
+    FitnessNavScreen(),
+    ExploreNavScreen(),
     SessionsListScreen(),
-    AiCoachScreen(),
   ];
 
   @override
@@ -67,15 +63,13 @@ class _MainNavScreenState extends State<MainNavScreen> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(children: [
-                _navItem(0, Icons.home_outlined,            Icons.home_rounded,          'Home'),
-                _navItem(1, Icons.add_circle_outline,       Icons.add_circle,            'Log'),
-                _navItem(2, Icons.directions_walk_outlined, Icons.directions_walk,       'Steps'),
-                _navItem(3, Icons.fitness_center_outlined,  Icons.fitness_center,        'Workout'),
-                _navItem(4, Icons.restaurant_menu_outlined, Icons.restaurant_menu,       'Recipes'),
-                _navItem(5, Icons.live_tv_outlined,         Icons.live_tv,               'Live'),
-                _navItem(6, Icons.sports_gymnastics_outlined, Icons.sports_gymnastics,     'Coach'),
+                _navItem(0, Icons.home_outlined,         Icons.home_rounded,        'Home'),
+                _navItem(1, Icons.add_circle_outline,    Icons.add_circle,          'Log'),
+                _navItem(2, Icons.fitness_center_outlined, Icons.fitness_center,    'Fitness'),
+                _navItem(3, Icons.explore_outlined,      Icons.explore_rounded,     'Explore'),
+                _navItem(4, Icons.live_tv_outlined,      Icons.live_tv,             'Live'),
               ]),
             ),
           ),
@@ -88,80 +82,88 @@ class _MainNavScreenState extends State<MainNavScreen> {
     final active = _idx == idx;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Expanded(child: GestureDetector(
-      onTap: () => setState(() => _idx = idx),
-      behavior: HitTestBehavior.opaque,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOut,
-        padding: const EdgeInsets.symmetric(vertical: 6),
-        decoration: BoxDecoration(
-          color: active
-              ? AppColors.brandBlue.withOpacity(isDark ? 0.18 : 0.10)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: active
-              ? [BoxShadow(color: AppColors.brandBlue.withOpacity(0.15), blurRadius: 10, offset: const Offset(0, 3))]
-              : null,
+    return Expanded(
+      child: GestureDetector(
+        onTap: () => setState(() => _idx = idx),
+        behavior: HitTestBehavior.opaque,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeInOut,
+          padding: const EdgeInsets.symmetric(vertical: 7),
+          decoration: BoxDecoration(
+            color: active
+                ? AppColors.brandBlue.withOpacity(isDark ? 0.18 : 0.10)
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: active
+                ? [BoxShadow(
+                    color: AppColors.brandBlue.withOpacity(0.15),
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  )]
+                : null,
+          ),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            SizedBox(
+              height: 34,
+              child: Center(
+                child: idx == 1
+                  ? Container(
+                      width: 34, height: 34,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [AppColors.brandBlue, AppColors.brandGreen],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.brandBlue.withOpacity(0.40),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Icon(active ? activeIcon : icon, color: Colors.white, size: 18),
+                    )
+                  : idx == 4
+                    ? _LiveNavIcon(icon: icon, activeIcon: activeIcon, active: active, isDark: isDark)
+                    : AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: EdgeInsets.all(active ? 5 : 4),
+                        decoration: active
+                          ? BoxDecoration(
+                              color: AppColors.brandBlue.withOpacity(0.14),
+                              borderRadius: BorderRadius.circular(9),
+                            )
+                          : null,
+                        child: Icon(
+                          active ? activeIcon : icon,
+                          size: 20,
+                          color: active
+                              ? AppColors.brandBlue
+                              : isDark ? AppColors.textSecDark : AppColors.textHint,
+                        ),
+                      ),
+              ),
+            ),
+            const SizedBox(height: 3),
+            AnimatedDefaultTextStyle(
+              duration: const Duration(milliseconds: 200),
+              style: GoogleFonts.inter(
+                fontSize: 11,
+                fontWeight: active ? FontWeight.w700 : FontWeight.w400,
+                color: active
+                    ? AppColors.brandBlue
+                    : isDark ? AppColors.textSecDark : AppColors.textHint,
+              ),
+              child: Text(label, overflow: TextOverflow.ellipsis, maxLines: 1),
+            ),
+          ]),
         ),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          // Fixed-height icon zone so all items stay at the same vertical position
-          SizedBox(
-            height: 34,
-            child: Center(
-              child: idx == 1
-                ? Container(
-                    width: 34, height: 34,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [AppColors.brandBlue, AppColors.brandGreen],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(color: AppColors.brandBlue.withOpacity(0.40),
-                            blurRadius: 10, offset: const Offset(0, 4)),
-                      ],
-                    ),
-                    child: Icon(active ? activeIcon : icon, color: Colors.white, size: 18),
-                  )
-                : idx == 5
-                  ? _LiveNavIcon(icon: icon, activeIcon: activeIcon, active: active, isDark: isDark)
-                  : AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      padding: EdgeInsets.all(active ? 5 : 4),
-                      decoration: active
-                        ? BoxDecoration(
-                            color: AppColors.brandBlue.withOpacity(0.14),
-                            borderRadius: BorderRadius.circular(9),
-                          )
-                        : null,
-                      child: Icon(
-                        active ? activeIcon : icon,
-                        size: 19,
-                        color: active
-                            ? AppColors.brandBlue
-                            : isDark ? AppColors.textSecDark : AppColors.textHint,
-                      ),
-                    ),
-            ),
-          ),
-          const SizedBox(height: 2),
-          AnimatedDefaultTextStyle(
-            duration: const Duration(milliseconds: 200),
-            style: GoogleFonts.inter(
-              fontSize: 9.5,
-              fontWeight: active ? FontWeight.w700 : FontWeight.w400,
-              color: active
-                  ? AppColors.brandBlue
-                  : isDark ? AppColors.textSecDark : AppColors.textHint,
-            ),
-            child: Text(label, overflow: TextOverflow.ellipsis, maxLines: 1),
-          ),
-        ]),
       ),
-    ));
+    );
   }
 }
 
@@ -217,7 +219,11 @@ class _LiveNavIconState extends State<_LiveNavIcon>
               width: 7, height: 7,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Color.lerp(const Color(0xFFCC0000), const Color(0xFFFF5555), _anim.value),
+                color: Color.lerp(
+                  const Color(0xFFCC0000),
+                  const Color(0xFFFF5555),
+                  _anim.value,
+                ),
               ),
             ),
           ),

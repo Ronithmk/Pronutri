@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:pdf/pdf.dart';
@@ -136,7 +135,7 @@ class _HealthReportScreenState extends State<HealthReportScreen> {
           pw.Text('Nutrition Summary (This Week)',
               style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 8),
-          pw.Table.fromTextArray(
+          pw.TableHelper.fromTextArray(
             headers: ['Metric', 'Value'],
             data: [
               ['Avg Daily Calories', '${avgCals.toInt()} kcal'],
@@ -188,7 +187,7 @@ class _HealthReportScreenState extends State<HealthReportScreen> {
           pw.Text('Habit & Wellness',
               style: pw.TextStyle(fontSize: 16, fontWeight: pw.FontWeight.bold)),
           pw.SizedBox(height: 8),
-          pw.Table.fromTextArray(
+          pw.TableHelper.fromTextArray(
             headers: ['Metric', 'Value'],
             data: [
               ['Current Streak', '${habits.currentStreak} days'],
@@ -221,14 +220,14 @@ class _HealthReportScreenState extends State<HealthReportScreen> {
       final dir = await getApplicationDocumentsDirectory();
       final file = File('${dir.path}/pronutri_report.pdf');
       await file.writeAsBytes(await pdf.save());
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('PDF saved to ${file.path}',
               style: GoogleFonts.inter(fontSize: 13)), backgroundColor: AppColors.brandGreen),
         );
       }
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.accent),
         );
@@ -247,7 +246,7 @@ class _HealthReportScreenState extends State<HealthReportScreen> {
       await file.writeAsBytes(await pdf.save());
       await Share.shareXFiles([XFile(file.path)], text: 'My ProNutri Health Report');
     } catch (e) {
-      if (mounted) {
+      if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Error: $e'), backgroundColor: AppColors.accent),
         );
