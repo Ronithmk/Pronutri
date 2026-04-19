@@ -20,26 +20,39 @@ import 'screens/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // Global error handler — ensures runApp always runs even if init partially fails
+  FlutterError.onError = (details) {
+    FlutterError.presentError(details);
+  };
 
-  await Hive.initFlutter();
-  Hive.registerAdapter(MealLogAdapter());
-  Hive.registerAdapter(WaterLogAdapter());
-  await Hive.openBox<MealLog>('meal_logs');
-  await Hive.openBox<WaterLog>('water_logs');
-  await Hive.openBox('settings');
-  await Hive.openBox('custom_foods');
-  await Hive.openBox('habits_data');
-  await Hive.openBox('meal_plans');
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (_) {}
+
+  try {
+    await Hive.initFlutter();
+    Hive.registerAdapter(MealLogAdapter());
+    Hive.registerAdapter(WaterLogAdapter());
+    await Hive.openBox<MealLog>('meal_logs');
+    await Hive.openBox<WaterLog>('water_logs');
+    await Hive.openBox('settings');
+    await Hive.openBox('custom_foods');
+    await Hive.openBox('habits_data');
+    await Hive.openBox('meal_plans');
+  } catch (_) {}
 
   final authProvider = AuthProvider();
-  await authProvider.init();
+  try {
+    await authProvider.init();
+  } catch (_) {}
 
-  await NotificationService.init();
-  // Schedule smart daily reminders (no-op if already scheduled)
-  await NotificationService.scheduleDailyReminders();
+  // Notifications are non-critical — never block app startup
+  try {
+    await NotificationService.init();
+    await NotificationService.scheduleDailyReminders();
+  } catch (_) {}
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
