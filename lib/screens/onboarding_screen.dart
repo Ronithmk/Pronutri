@@ -26,6 +26,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final circleSize = (size.width * 0.38).clamp(120.0, 160.0);
+    final titleSize = (size.width * 0.085).clamp(26.0, 36.0);
+    final emojiSize = (circleSize * 0.45).clamp(52.0, 72.0);
     return Scaffold(
       backgroundColor: AppColors.bg,
       body: SafeArea(child: Column(children: [
@@ -37,11 +41,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           itemBuilder: (_, i) => Padding(
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-              Container(width: 160, height: 160, decoration: BoxDecoration(color: _pages[i].bg, shape: BoxShape.circle), child: Center(child: Text(_pages[i].emoji, style: const TextStyle(fontSize: 72)))),
-              const SizedBox(height: 48),
-              Text(_pages[i].title, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 36, fontWeight: FontWeight.w800, color: AppColors.textPrimary, height: 1.1, letterSpacing: -1)),
+              Container(width: circleSize, height: circleSize, decoration: BoxDecoration(color: _pages[i].bg, shape: BoxShape.circle), child: Center(child: Text(_pages[i].emoji, style: TextStyle(fontSize: emojiSize)))),
+              SizedBox(height: size.height * 0.05),
+              Text(_pages[i].title, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: titleSize, fontWeight: FontWeight.w800, color: AppColors.textPrimary, height: 1.1, letterSpacing: -1)),
               const SizedBox(height: 16),
-              Text(_pages[i].sub, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 16, color: AppColors.textSecondary, height: 1.6)),
+              Text(_pages[i].sub, textAlign: TextAlign.center, style: GoogleFonts.inter(fontSize: 15, color: AppColors.textSecondary, height: 1.6)),
             ]),
           ),
         )),

@@ -41,7 +41,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
     final isCredits = widget.reason == 'no_credits';
     return Scaffold(
       backgroundColor: AppColors.bg,
-      body: SafeArea(child: Padding(
+      body: SafeArea(child: SingleChildScrollView(child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           Text(isCredits ? '🤖' : '🔓', style: const TextStyle(fontSize: 72)),
@@ -89,7 +89,7 @@ class _PaywallScreenState extends State<PaywallScreen> {
             child: Text('Maybe later',
               style: GoogleFonts.inter(color: AppColors.textSecondary))),
         ]),
-      )),
+      ))),
     );
   }
 }

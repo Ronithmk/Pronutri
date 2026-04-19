@@ -162,21 +162,25 @@ class ProgressScreen extends StatelessWidget {
         const SizedBox(height: 4),
         Text('Based on calories from protein, carbs & fat', style: GoogleFonts.inter(fontSize: 12, color: AppColors.textSecondary)),
         const SizedBox(height: 20),
-        Row(children: [
+        LayoutBuilder(builder: (context, constraints) {
+          final chartSize = (constraints.maxWidth * 0.38).clamp(110.0, 150.0);
+          final centerR = chartSize * 0.31;
+          final sectionR = chartSize * 0.16;
+          return Row(children: [
           SizedBox(
-            width: 140, height: 140,
+            width: chartSize, height: chartSize,
             child: PieChart(PieChartData(
               sectionsSpace: 3,
-              centerSpaceRadius: 44,
+              centerSpaceRadius: centerR,
               sections: [
-                PieChartSectionData(value: proteinKcal, color: AppColors.primary, radius: 22, title: '', showTitle: false),
-                PieChartSectionData(value: carbsKcal,   color: AppColors.amber,   radius: 22, title: '', showTitle: false),
-                PieChartSectionData(value: fatKcal,     color: AppColors.accent,  radius: 22, title: '', showTitle: false),
+                PieChartSectionData(value: proteinKcal, color: AppColors.primary, radius: sectionR, title: '', showTitle: false),
+                PieChartSectionData(value: carbsKcal,   color: AppColors.amber,   radius: sectionR, title: '', showTitle: false),
+                PieChartSectionData(value: fatKcal,     color: AppColors.accent,  radius: sectionR, title: '', showTitle: false),
               ],
               borderData: FlBorderData(show: false),
             )),
           ),
-          const SizedBox(width: 24),
+          const SizedBox(width: 20),
           Expanded(child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
             _pieLegend('Protein', '${p.todayProtein.toInt()}g', '$pPct%', AppColors.primary,  isDark),
             const SizedBox(height: 12),
@@ -184,7 +188,8 @@ class ProgressScreen extends StatelessWidget {
             const SizedBox(height: 12),
             _pieLegend('Fat',     '${p.todayFat.toInt()}g',     '$fPct%', AppColors.accent,   isDark),
           ])),
-        ]),
+        ]);
+        }),
       ]),
     );
   }
