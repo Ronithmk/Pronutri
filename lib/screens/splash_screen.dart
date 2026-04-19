@@ -4,6 +4,7 @@ import 'package:hive/hive.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/nutrition_provider.dart';
+import '../services/habit_provider.dart';
 import '../theme/app_theme.dart';
 import 'main_nav_screen.dart';
 import 'trainer_dashboard_screen.dart';
@@ -88,6 +89,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (auth.isLoggedIn) {
       context.read<NutritionProvider>().setUser(auth.currentUser);
+      context.read<HabitProvider>().setUser(auth.currentUser?.id ?? '');
 
       // Trainer pending → show review screen, not home
       if (auth.currentUser?.isTrainerPending == true) {
@@ -211,9 +213,34 @@ class _SplashScreenState extends State<SplashScreen>
 
             FadeTransition(
               opacity: _textFade,
-              child: Text('Your Personal Nutrition Coach',
-                style: GoogleFonts.inter(fontSize: 13,
-                    color: const Color(0xFFAAB8CC), fontWeight: FontWeight.w400)),
+              child: Column(children: [
+                // AI badge
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF1E6EBD), Color(0xFF00C896)],
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(color: AppColors.brandBlue.withOpacity(0.30), blurRadius: 12, offset: const Offset(0, 4)),
+                    ],
+                  ),
+                  child: Row(mainAxisSize: MainAxisSize.min, children: [
+                    const Text('✦', style: TextStyle(color: Colors.white, fontSize: 11)),
+                    const SizedBox(width: 6),
+                    Text('AI-Powered Nutrition App',
+                      style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700,
+                          color: Colors.white, letterSpacing: 0.3)),
+                  ]),
+                ),
+                const SizedBox(height: 10),
+                Text('Smart Meals  ·  Smart Goals  ·  Real Results',
+                  style: GoogleFonts.inter(fontSize: 12,
+                      color: const Color(0xFFAAB8CC), fontWeight: FontWeight.w400, letterSpacing: 0.2)),
+              ]),
             ),
 
             const SizedBox(height: 56),

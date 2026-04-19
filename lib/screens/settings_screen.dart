@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/nutrition_provider.dart';
+import '../services/habit_provider.dart';
 import '../utils/unit_helper.dart';
 import '../services/theme_provider.dart';
 import '../theme/app_theme.dart';
@@ -59,6 +60,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       targetWeight: UnitHelper.parseWeightToKg(_targetCtrl.text, country),
     );
     nutrition.setUser(auth.currentUser);
+    context.read<HabitProvider>().setUser(auth.currentUser?.id ?? '');
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: const Text('Profile saved!'),
       backgroundColor: AppColors.primary,

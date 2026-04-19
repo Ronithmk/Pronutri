@@ -5,12 +5,16 @@ import 'package:intl/intl.dart';
 import '../services/nutrition_provider.dart';
 import '../services/auth_provider.dart';
 import '../services/theme_provider.dart';
+import '../services/habit_provider.dart';
 import '../models/meal_log.dart';
+import '../data/app_data.dart';
+import '../data/country_meal_data.dart';
 import '../theme/app_theme.dart';
 import 'settings_screen.dart';
 import 'progress_screen.dart';
 import 'exercise_screen.dart';
 import 'paywall_screen.dart';
+import 'habits_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -37,9 +41,13 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 16),
             _streakCard(context, p, isDark),
             const SizedBox(height: 16),
+            _habitsCard(context, isDark),
+            const SizedBox(height: 16),
             _weeklyChart(context, p, isDark),
             const SizedBox(height: 16),
             _mealsCard(context, p, isDark),
+            const SizedBox(height: 16),
+            _countryMealsSection(context, auth, isDark),
             const SizedBox(height: 16),
             _workoutBanner(context, isDark),
           ])),
@@ -103,7 +111,7 @@ class HomeScreen extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  u?.name.isNotEmpty == true ? u!.name[0].toUpperCase() : 'U',
+                  (u != null && u.name.isNotEmpty) ? u.name[0].toUpperCase() : 'U',
                   style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w800, color: Colors.white),
                 ),
               ),
@@ -346,22 +354,49 @@ class HomeScreen extends StatelessWidget {
               color: isDark ? AppColors.textPriDark : AppColors.textPri)),
             Text('$totalL / ${goalL}L today', style: GoogleFonts.inter(fontSize: 11, color: AppColors.brandBlue, fontWeight: FontWeight.w600)),
           ])),
-          GestureDetector(
-            onTap: () => Provider.of<NutritionProvider>(context, listen: false).addWater(250),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [AppColors.brandBlue, Color(0xFF2590E8)]),
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 5))],
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            // Undo last glass
+            GestureDetector(
+              onTap: () async {
+                final removed = await Provider.of<NutritionProvider>(context, listen: false).undoLastWater();
+                if (removed && context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Last glass removed'),
+                    backgroundColor: AppColors.brandBlue,
+                    behavior: SnackBarBehavior.floating,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    duration: const Duration(seconds: 2),
+                  ));
+                }
+              },
+              child: Container(
+                width: 36, height: 36,
+                margin: const EdgeInsets.only(right: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AppColors.brandBlue.withOpacity(0.35)),
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Icon(Icons.undo_rounded, color: AppColors.brandBlue, size: 16),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.add, color: Colors.white, size: 14),
-                const SizedBox(width: 4),
-                Text('250ml', style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600)),
-              ]),
             ),
-          ),
+            // Add 250ml
+            GestureDetector(
+              onTap: () => Provider.of<NutritionProvider>(context, listen: false).addWater(250),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(colors: [AppColors.brandBlue, Color(0xFF2590E8)]),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [BoxShadow(color: AppColors.brandBlue.withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 5))],
+                ),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.add, color: Colors.white, size: 14),
+                  const SizedBox(width: 4),
+                  Text('250ml', style: GoogleFonts.inter(fontSize: 12, color: Colors.white, fontWeight: FontWeight.w600)),
+                ]),
+              ),
+            ),
+          ]),
         ]),
         const SizedBox(height: 18),
         // Progress bar
@@ -422,8 +457,20 @@ class HomeScreen extends StatelessWidget {
 
   // ── Streak Card ───────────────────────────────────────────────────────────
   Widget _streakCard(BuildContext context, NutritionProvider p, bool isDark) {
-    final days    = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
-    final today   = DateTime.now().weekday - 1;
+    final days       = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+    final todayIndex = DateTime.now().weekday - 1; // 0=Mon, 6=Sun
+    final weekly     = p.weeklyCalories; // last 7 days ending today (index 6 = today)
+
+    // Map weeklyCalories (index 0 = 6 days ago) to weekday index
+    // today is weekday-1; day i in weeklyCalories was (6-i) days ago
+    // weekday index for weekly[i] = (todayIndex - (6 - i) + 7) % 7
+    bool loggedOnWeekday(int weekdayIdx) {
+      for (int i = 0; i < 7; i++) {
+        final wdIdx = (todayIndex - (6 - i) + 7) % 7;
+        if (wdIdx == weekdayIdx) return weekly[i] > 0;
+      }
+      return false;
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -450,28 +497,29 @@ class HomeScreen extends StatelessWidget {
         ]),
         const SizedBox(height: 18),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: List.generate(7, (i) {
-          final done    = i < today;
-          final isToday = i == today;
+          final isToday = i == todayIndex;
+          final done    = loggedOnWeekday(i) && !isToday;
+          final todayLogged = isToday && loggedOnWeekday(i);
           return Column(children: [
             AnimatedContainer(
               duration: const Duration(milliseconds: 300),
               width: 40, height: 40,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                gradient: done
+                gradient: done || todayLogged
                   ? const LinearGradient(colors: [AppColors.brandBlue, AppColors.brandGreen], begin: Alignment.topLeft, end: Alignment.bottomRight)
                   : null,
-                color: done ? null : isToday
+                color: (done || todayLogged) ? null : isToday
                   ? AppColors.amber.withOpacity(0.18)
                   : isDark ? AppColors.surfVarDark : AppColors.surfaceVar,
-                border: isToday ? Border.all(color: AppColors.amber, width: 2.5) : null,
-                boxShadow: done
+                border: isToday && !todayLogged ? Border.all(color: AppColors.amber, width: 2.5) : null,
+                boxShadow: done || todayLogged
                   ? [BoxShadow(color: AppColors.brandBlue.withOpacity(0.35), blurRadius: 10, offset: const Offset(0, 4))]
                   : isToday
                     ? [BoxShadow(color: AppColors.amber.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))]
                     : null,
               ),
-              child: Center(child: done
+              child: Center(child: done || todayLogged
                 ? const Icon(Icons.check_rounded, color: Colors.white, size: 18)
                 : Text(days[i], style: TextStyle(fontSize: 12, fontWeight: FontWeight.w700,
                     color: isToday ? AppColors.amber : isDark ? AppColors.textSecDark : AppColors.textSec))),
@@ -483,6 +531,81 @@ class HomeScreen extends StatelessWidget {
       ]),
     );
   }
+
+  // ── Habits Preview Card ───────────────────────────────────────────────────
+  Widget _habitsCard(BuildContext context, bool isDark) {
+    final h = Provider.of<HabitProvider>(context);
+    final done = h.completedToday;
+    final mood = h.moodToday;
+    const moodEmojis = ['', '😔', '😕', '😐', '🙂', '😄'];
+
+    return GestureDetector(
+      onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HabitsScreen())),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: Clay.card(isDark: isDark, radius: 28),
+        child: Column(children: [
+          Row(children: [
+            Container(
+              width: 40, height: 40,
+              decoration: Clay.icon(color: AppColors.purple, radius: 14, isDark: isDark),
+              child: const Center(child: Text('🏆', style: TextStyle(fontSize: 20))),
+            ),
+            const SizedBox(width: 12),
+            Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Text('Daily Habits', style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w700,
+                color: isDark ? AppColors.textPriDark : AppColors.textPri)),
+              Text('$done/5 completed today',
+                style: GoogleFonts.inter(fontSize: 11,
+                  color: done == 5 ? AppColors.brandGreen : AppColors.textSec)),
+            ])),
+            if (mood != null)
+              Text(moodEmojis[mood], style: const TextStyle(fontSize: 24)),
+            const SizedBox(width: 8),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: Clay.pill(color: AppColors.purple, opacity: 0.12),
+              child: Text('View →', style: GoogleFonts.inter(fontSize: 12, color: AppColors.purple, fontWeight: FontWeight.w600)),
+            ),
+          ]),
+          const SizedBox(height: 14),
+          Row(children: [
+            _habitDot('💧', h.waterDone),
+            const SizedBox(width: 8),
+            _habitDot('😴', h.sleepDone),
+            const SizedBox(width: 8),
+            _habitDot('🚶', h.stepsDone),
+            const SizedBox(width: 8),
+            _habitDot('🥗', h.junkFreeDone),
+            const SizedBox(width: 8),
+            _habitDot('🍽', h.mealDone),
+            const Spacer(),
+            if (h.currentStreak > 0)
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: Clay.pill(color: AppColors.amber, opacity: 0.15),
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Text('🔥', style: TextStyle(fontSize: 11)),
+                  const SizedBox(width: 4),
+                  Text('${h.currentStreak} day streak',
+                    style: GoogleFonts.inter(fontSize: 11, color: AppColors.amber, fontWeight: FontWeight.w700)),
+                ]),
+              ),
+          ]),
+        ]),
+      ),
+    );
+  }
+
+  Widget _habitDot(String emoji, bool done) => Container(
+    width: 38, height: 38,
+    decoration: BoxDecoration(
+      color: done ? AppColors.brandGreen.withOpacity(0.12) : AppColors.surfaceVar,
+      shape: BoxShape.circle,
+      border: done ? Border.all(color: AppColors.brandGreen.withOpacity(0.4)) : null,
+    ),
+    child: Center(child: Text(emoji, style: TextStyle(fontSize: 18, color: done ? null : const Color(0xFFCCCCCC)))),
+  );
 
   // ── Weekly Chart ──────────────────────────────────────────────────────────
   Widget _weeklyChart(BuildContext context, NutritionProvider p, bool isDark) {
@@ -561,9 +684,70 @@ class HomeScreen extends StatelessWidget {
         const SizedBox(height: 16),
         if (meals.isEmpty)
           _emptyMeals(isDark)
-        else
+        else ...[
           ...meals.take(4).map((m) => _mealTile(context, m, p, isDark)),
+          if (meals.length > 4)
+            GestureDetector(
+              onTap: () => _showAllMeals(context, meals, p, isDark),
+              child: Container(
+                margin: const EdgeInsets.only(top: 4),
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                decoration: BoxDecoration(
+                  color: AppColors.brandGreen.withOpacity(0.08),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(child: Text(
+                  'See all ${meals.length} meals →',
+                  style: GoogleFonts.inter(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.brandGreen),
+                )),
+              ),
+            ),
+        ],
       ]),
+    );
+  }
+
+  void _showAllMeals(BuildContext context, List<MealLog> meals, NutritionProvider p, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => DraggableScrollableSheet(
+        initialChildSize: 0.7,
+        maxChildSize: 0.92,
+        minChildSize: 0.4,
+        builder: (_, ctrl) => Container(
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.surfDark : AppColors.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          ),
+          child: Column(children: [
+            const SizedBox(height: 12),
+            Container(width: 40, height: 4, decoration: BoxDecoration(color: AppColors.border, borderRadius: BorderRadius.circular(2))),
+            const SizedBox(height: 16),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(children: [
+                Text("Today's Meals", style: GoogleFonts.inter(fontSize: 16, fontWeight: FontWeight.w700,
+                  color: isDark ? AppColors.textPriDark : AppColors.textPri)),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: Clay.pill(color: AppColors.brandGreen, opacity: 0.15),
+                  child: Text('${meals.length} logged', style: GoogleFonts.inter(fontSize: 11, color: AppColors.brandGreen, fontWeight: FontWeight.w600)),
+                ),
+              ]),
+            ),
+            const SizedBox(height: 12),
+            Expanded(child: ListView.builder(
+              controller: ctrl,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              itemCount: meals.length,
+              itemBuilder: (_, i) => _mealTile(context, meals[i], p, isDark),
+            )),
+          ]),
+        ),
+      ),
     );
   }
 
@@ -639,6 +823,15 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(width: 6),
               Text(DateFormat('h:mm a').format(m.loggedAt), style: GoogleFonts.inter(fontSize: 10, color: AppColors.textSec)),
             ]),
+            const SizedBox(height: 5),
+            // Macro breakdown
+            Row(children: [
+              _macroTag('P', (m.protein * m.quantity).toInt(), AppColors.brandGreen),
+              const SizedBox(width: 5),
+              _macroTag('C', (m.carbs * m.quantity).toInt(), AppColors.amber),
+              const SizedBox(width: 5),
+              _macroTag('F', (m.fat * m.quantity).toInt(), AppColors.accent),
+            ]),
           ])),
           Column(crossAxisAlignment: CrossAxisAlignment.end, children: [
             Text('${(m.calories * m.quantity).toInt()}', style: GoogleFonts.inter(fontSize: 15, fontWeight: FontWeight.w800, color: AppColors.brandBlue)),
@@ -651,6 +844,10 @@ class HomeScreen extends StatelessWidget {
 
   // ── Workout Banner ────────────────────────────────────────────────────────
   Widget _workoutBanner(BuildContext context, bool isDark) {
+    // Pick an exercise based on the day of week so it rotates daily
+    const exercises = AppData.exercises;
+    final exercise  = exercises[DateTime.now().weekday % exercises.length];
+
     return GestureDetector(
       onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ExerciseScreen())),
       child: Container(
@@ -672,12 +869,12 @@ class HomeScreen extends StatelessWidget {
               child: Text("Today's Workout", style: GoogleFonts.inter(fontSize: 11, color: Colors.white70, fontWeight: FontWeight.w600)),
             ),
             const SizedBox(height: 12),
-            Text('Upper Body Strength', style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
+            Text(exercise.name, style: GoogleFonts.inter(fontSize: 18, fontWeight: FontWeight.w800, color: Colors.white)),
             const SizedBox(height: 6),
             Row(children: [
-              _wTag(Icons.timer_outlined, '45 min'),
+              _wTag(Icons.timer_outlined, exercise.duration),
               const SizedBox(width: 8),
-              _wTag(Icons.local_fire_department_outlined, '320 kcal'),
+              _wTag(Icons.local_fire_department_outlined, '${exercise.caloriesBurned} kcal'),
             ]),
             const SizedBox(height: 16),
             Container(
@@ -694,7 +891,7 @@ class HomeScreen extends StatelessWidget {
               ]),
             ),
           ])),
-          const Text('🏋️', style: TextStyle(fontSize: 60)),
+          Text(exercise.emoji, style: const TextStyle(fontSize: 60)),
         ]),
       ),
     );
@@ -705,4 +902,114 @@ class HomeScreen extends StatelessWidget {
     const SizedBox(width: 3),
     Text(label, style: GoogleFonts.inter(fontSize: 12, color: Colors.white70, fontWeight: FontWeight.w500)),
   ]);
+
+  Widget _macroTag(String label, int val, Color color) => Container(
+    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+    decoration: BoxDecoration(
+      color: color.withOpacity(0.12),
+      borderRadius: BorderRadius.circular(6),
+    ),
+    child: Text('$label: ${val}g', style: GoogleFonts.inter(fontSize: 9, fontWeight: FontWeight.w600, color: color)),
+  );
+
+  // ── Country-based meal suggestions ────────────────────────────────────────
+  Widget _countryMealsSection(BuildContext context, AuthProvider auth, bool isDark) {
+    final country = auth.currentUser?.country ?? 'India';
+    final cuisine = cuisineFor(country);
+
+    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      // Header
+      Row(children: [
+        Text(cuisine.flag, style: const TextStyle(fontSize: 18)),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            'Meals from Your Country',
+            style: GoogleFonts.inter(
+              fontSize: 16, fontWeight: FontWeight.w700,
+              color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppColors.brandGreen.withOpacity(0.12),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Text(
+            cuisine.cuisineName,
+            style: GoogleFonts.inter(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.brandGreen),
+          ),
+        ),
+      ]),
+      const SizedBox(height: 12),
+      SizedBox(
+        height: 150,
+        child: ListView.separated(
+          scrollDirection: Axis.horizontal,
+          itemCount: cuisine.meals.length,
+          separatorBuilder: (_, __) => const SizedBox(width: 12),
+          itemBuilder: (_, i) => _CountryMealCard(meal: cuisine.meals[i], isDark: isDark),
+        ),
+      ),
+    ]);
+  }
+}
+
+// ── Country meal card ─────────────────────────────────────────────────────────
+class _CountryMealCard extends StatelessWidget {
+  final CountryMeal meal;
+  final bool isDark;
+  const _CountryMealCard({required this.meal, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 140,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: isDark ? AppColors.surfaceDark : AppColors.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: isDark ? AppColors.borderDark : AppColors.border),
+        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 3))],
+      ),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(meal.emoji, style: const TextStyle(fontSize: 28)),
+        const SizedBox(height: 6),
+        Text(
+          meal.name,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
+          style: GoogleFonts.inter(
+            fontSize: 12, fontWeight: FontWeight.w600,
+            color: isDark ? AppColors.textPrimaryDark : AppColors.textPrimary,
+            height: 1.3,
+          ),
+        ),
+        const Spacer(),
+        Row(children: [
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            decoration: BoxDecoration(
+              color: AppColors.accent.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text('${meal.calories} kcal',
+                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.accent)),
+          ),
+          const SizedBox(width: 4),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            decoration: BoxDecoration(
+              color: AppColors.primary.withOpacity(0.10),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Text('${meal.protein}g P',
+                style: GoogleFonts.inter(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.primary)),
+          ),
+        ]),
+      ]),
+    );
+  }
 }
